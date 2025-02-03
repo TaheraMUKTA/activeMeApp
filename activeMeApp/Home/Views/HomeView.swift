@@ -8,24 +8,8 @@
 import SwiftUI
 
 struct HomeView: View {
-    @State var calories: Int = 123
-    @State var active: Int = 45
-    @State var stand: Int = 8
-    
-    var mockActivities = [
-        Activity(id: 0, title: "Today Steps", subtitle: "Goal 12,000", image: "figure.walk", tintColor: .green, amount: "5,850"),
-        Activity(id: 1, title: "Today", subtitle: "Goal 12,000", image: "figure.walk", tintColor: .red, amount: "9,850"),
-        Activity(id: 2, title: "Today Steps", subtitle: "Goal 1,000", image: "figure.walk", tintColor: .blue, amount: "850"),
-        Activity(id: 3, title: "Today Steps", subtitle: "Goal 80,000", image: "figure.run", tintColor: .purple, amount: "65,850")
-    ]
-    
-    var mockWorkouts = [
-         Workout(id: 0, tital: "Running", image: "figure.run", tintColor: .cyan, duration: "35 mins", date: "Jan 8", calories: "523 kcal"),
-         Workout(id: 1, tital: "Strength Training", image: "figure.strengthtraining.traditional", tintColor: .red, duration: "55 mins", date: "Jan 10", calories: "963 kcal"),
-         Workout(id: 2, tital: "Hiking", image: "figure.hiking", tintColor: .purple, duration: "45 mins", date: "Jan 12", calories: "823 kcal"),
-         Workout(id: 3, tital: "Swimming", image: "figure.pool.swim", tintColor: .blue, duration: "5 mins", date: "Jan 15", calories: "373 kcal")
-    ]
-    
+    @StateObject var viewModel = HomeViewModel()
+
     var body: some View {
         NavigationStack {
             ScrollView(showsIndicators: false) {
@@ -38,13 +22,13 @@ struct HomeView: View {
                         
                         Spacer()
                         
-                        VStack{
+                        VStack(alignment: .leading) {
                             VStack(alignment: .leading, spacing: 8) {
                                 Text("Calories")
                                     .font(.callout)
                                     .bold()
                                     .foregroundColor(.red)
-                                Text("123 kcal")
+                                Text("\(viewModel.calories)")
                                     .bold()
                             }
                             .padding(.bottom)
@@ -54,7 +38,7 @@ struct HomeView: View {
                                     .font(.callout)
                                     .bold()
                                     .foregroundColor(.green)
-                                Text("45 mins")
+                                Text("\(viewModel.active)")
                                     .bold()
                             }
                             .padding(.bottom)
@@ -64,7 +48,7 @@ struct HomeView: View {
                                     .font(.callout)
                                     .bold()
                                     .foregroundColor(.blue)
-                                Text("8 hours")
+                                Text("\(viewModel.stand)")
                                     .bold()
                             }
                             .padding(.bottom)
@@ -73,10 +57,10 @@ struct HomeView: View {
                         Spacer()
                         
                         ZStack {
-                            ProgressCircleView(progress: $calories, goal: 600, color: .red)
-                            ProgressCircleView(progress: $active, goal: 60, color: .green)
+                            ProgressCircleView(progress: $viewModel.calories, goal: 600, color: .red)
+                            ProgressCircleView(progress: $viewModel.active, goal: 60, color: .green)
                                 .padding(.all, 20)
-                            ProgressCircleView(progress: $stand, goal: 12, color: .blue)
+                            ProgressCircleView(progress: $viewModel.stand, goal: 12, color: .blue)
                                 .padding(.all, 40)
                             
                         }
@@ -105,7 +89,7 @@ struct HomeView: View {
                     .padding(.horizontal)
                     
                     LazyVGrid(columns: Array(repeating: GridItem(spacing: 20), count: 2)) {
-                        ForEach(mockActivities, id: \.id) { activity in
+                        ForEach(viewModel.mockActivities, id: \.id) { activity in
                             ActivityCardView(activity: activity)
                             
                         }
@@ -134,7 +118,7 @@ struct HomeView: View {
                     .padding(.top)
                     
                     LazyVStack {
-                        ForEach(mockWorkouts, id: \.id) { workout in
+                        ForEach(viewModel.mockWorkouts, id: \.id) { workout in
                             WorkoutCardView(workout: workout)
                             
                         }
