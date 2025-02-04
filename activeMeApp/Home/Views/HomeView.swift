@@ -88,13 +88,16 @@ struct HomeView: View {
                     }
                     .padding(.horizontal)
                     
-                    LazyVGrid(columns: Array(repeating: GridItem(spacing: 20), count: 2)) {
-                        ForEach(viewModel.mockActivities, id: \.id) { activity in
-                            ActivityCardView(activity: activity)
-                            
+                    if !viewModel.activities.isEmpty {
+                        LazyVGrid(columns: Array(repeating: GridItem(spacing: 20), count: 2)) {
+                            ForEach(viewModel.activities, id: \.title) { activity in
+                                ActivityCardView(activity: activity)
+                                
+                            }
                         }
+                        .padding(.horizontal)
+                        
                     }
-                    .padding(.horizontal)
                     
                     HStack {
                         Text("Recent Workouts")
@@ -134,5 +137,6 @@ struct HomeView: View {
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
         HomeView()
+            
     }
 }
