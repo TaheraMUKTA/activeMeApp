@@ -18,6 +18,8 @@ struct ActivityCardView: View {
                     VStack(alignment: .leading, spacing: 8) {
                         Text(activity.title)
                             .font(.headline)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.5)
                         Text(activity.subtitle)
                             .font(.caption)
                     }
