@@ -8,52 +8,6 @@
 import SwiftUI
 import Charts
 
-struct DailyStepModel: Identifiable {
-    let id = UUID()
-    let date: Date
-    let count: Double
-}
-
-enum ChartOptions: String, CaseIterable {
-    case oneWeek = "Week"
-    case oneMonth = "Month"
-    case oneYear = "Year"
-}
-
-class ChartsDataViewModel: ObservableObject {
-    var mockChartData = [
-        DailyStepModel(date: Date(), count: 6780),
-        DailyStepModel(date: Calendar.current.date(byAdding: .day, value: -1, to: Date()) ?? Date(), count: 10350),
-        DailyStepModel(date: Calendar.current.date(byAdding: .day, value: -2, to: Date()) ?? Date(), count: 12350),
-        DailyStepModel(date: Calendar.current.date(byAdding: .day, value: -3, to: Date()) ?? Date(), count: 15350),
-        DailyStepModel(date: Calendar.current.date(byAdding: .day, value: -4, to: Date()) ?? Date(), count: 13350),
-        DailyStepModel(date: Calendar.current.date(byAdding: .day, value: -5, to: Date()) ?? Date(), count: 11350),
-        DailyStepModel(date: Calendar.current.date(byAdding: .day, value: -6, to: Date()) ?? Date(), count: 8350),
-        
-    ]
-    
-   
-    @Published var mockOneMonthData = [DailyStepModel]()
-    
-    init() {
-        var mockOneMonths = mockDataForDays(days: 30)
-        DispatchQueue.main.async {
-            self.mockOneMonthData = mockOneMonths
-        }
-    }
-    
-    func mockDataForDays(days: Int) -> [DailyStepModel] {
-        var mockData = [DailyStepModel]()
-        for day in 0..<days {
-            let currentDate = Calendar.current.date(byAdding: .day, value: -day, to: Date()) ?? Date()
-            let randomStepCount = Int.random(in: 5000...15000)
-            let dailyStepData = DailyStepModel(date: currentDate, count: Double(randomStepCount))
-            mockData.append(dailyStepData)
-        }
-        return mockData
-    }
-}
-
 struct ChartsDataView: View {
     
     @StateObject var viewModel = ChartsDataViewModel()
@@ -70,31 +24,73 @@ struct ChartsDataView: View {
             ZStack {
                 switch selectedChart {
                 case .oneWeek:
-                    Chart {
-                        ForEach(viewModel.mockChartData) { data in
-                            BarMark(x: .value(data.date.formatted(), data.date, unit: .day), y: .value("Steps", data.count))
-                                .cornerRadius(5)
+                    VStack {
+                        ChartDataView(average: viewModel.oneWeekAverage, total: viewModel.oneWeekTotal)
+                        Chart {
+                            ForEach(viewModel.mockWeekChartData) { data in
+                                BarMark(x: .value("Day", viewModel.weekdayString(from: data.date)),  y: .value(viewModel.selectedMetric.rawValue, data.count))
+                                    .cornerRadius(5)
+                                    .foregroundStyle(viewModel.selectedMetricColor) // <- Dynamic Color
+
+                            }
                         }
+
                     }
+                   
                 case .oneMonth:
-                    Chart {
-                        ForEach(viewModel.mockOneMonthData) { data in
-                            BarMark(x: .value(data.date.formatted(), data.date, unit: .day), y: .value("Steps", data.count))
-                                .cornerRadius(5)
-                        }
-                    }
-                case .oneYear:
-                    Chart {
-                        ForEach(viewModel.mockChartData) { data in
-                            BarMark(x: .value(data.date.formatted(), data.date, unit: .day), y: .value("Steps", data.count))
-                                .cornerRadius(5)
+                    VStack {
+                        ChartDataView(average: viewModel.oneMonthAverage, total: viewModel.oneMonthTotal)
+                        Chart {
+                            ForEach(viewModel.mockOneMonthData) { data in
+                                BarMark(x: .value("Day", viewModel.dayOfMonth(from: data.date)), y: .value(viewModel.selectedMetric.rawValue, data.count))
+                                    .cornerRadius(5)
+                                    .foregroundStyle(viewModel.selectedMetricColor)
+                                
+                            }
                             
                         }
+                        .chartXAxis {
+                            AxisMarks(values: .stride(by: 3)) // Show labels every 3 days
+                        }
+                        .chartXScale(domain: 1...31.8) // Ensures spacing fits properly
+                        .padding(.horizontal, 10)
                     }
+                                        
+                    
+                    case .oneYear:
+                    VStack {
+                        ChartDataView(average: viewModel.oneYearAverage, total: viewModel.oneYearTotal)
+                        Chart {
+                            ForEach(viewModel.fullYearData) { data in
+                                BarMark(
+                                    x: .value("Month", Double(Calendar.current.component(.month, from: data.date)) + 0.5), // Shift left
+                                    y: .value(viewModel.selectedMetric.rawValue, data.count)
+                                )
+                                .cornerRadius(5)
+                                .foregroundStyle(viewModel.selectedMetricColor)
+                            }
+                        }
+                        .padding(.horizontal, 5)
+                        .chartXScale(domain: viewModel.adjustedXScaleRange) // Use ViewModel function
+                        .chartXAxis {
+                            AxisMarks(values: Array(1...12)) { month in
+                                if let monthInt = month.as(Int.self) {
+                                    AxisValueLabel {
+                                        Text(Calendar.current.monthSymbols[monthInt - 1].prefix(3)) // "Jan", "Feb", "Mar", ...
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+
+
+
+                    
                 }
             }
             .foregroundColor(.purple.opacity(0.9))
-            .frame(maxHeight: 350)
+            .frame(maxHeight: 400)
             .padding(.horizontal)
             
             HStack {
@@ -106,12 +102,33 @@ struct ChartsDataView: View {
                     }
                     .padding()
                     .frame(width: 85, height: 45)
-                    .foregroundColor(selectedChart == option ? .white : .purple)
-                    .background(selectedChart == option ? .purple.opacity(0.9) : .clear)
+                    .foregroundColor(selectedChart == option ? .white : viewModel.selectedMetricColor) // Use dynamic color
+                    .background(selectedChart == option ? viewModel.selectedMetricColor : Color.clear)
                     .cornerRadius(15)
                     .padding(.horizontal)
                 }
             }
+            .padding(.bottom, 30)
+            
+         
+                HStack {
+                    ForEach(ChartMetric.allCases, id: \.rawValue) { metric in
+                        Button(metric.rawValue) {
+                            withAnimation {
+                                viewModel.selectedMetric = metric
+                            }
+                        }
+                        .frame(width: 85, height: 50)
+                        .foregroundColor(viewModel.selectedMetric == metric ? .white : viewModel.selectedMetricColor)
+                        .background(viewModel.selectedMetric == metric ? viewModel.selectedMetricColor : Color.gray.opacity(0.1))
+                        .fontWeight(.bold)
+                        .cornerRadius(10)
+                        .padding(.horizontal, 4)
+                    }
+                
+                
+            }
+            
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .init(horizontal: .leading, vertical: .top))
     }
