@@ -8,7 +8,10 @@
 import SwiftUI
 
 struct FitnessTabView: View {
+    @AppStorage("userName") var userName: String?
+    
     @State var selectedTab = "Home"
+    @State var showPage = true
     
     init() {
         let appearance = UITabBarAppearance()
@@ -32,14 +35,14 @@ struct FitnessTabView: View {
             ChartsDataView()
                 .tag("Charts")
                 .tabItem {
-                    Image(systemName: "chart.line.uptrend.xyaxis")
+                    Image(systemName: "chart.bar.xaxis.ascending")
                     Text("Charts")
                 }
-            LeaderboardView()
-                .tag("Leaderboard")
+            ChampionsView(showPage: .constant(false))
+                .tag("Champions")
                 .tabItem {
-                    Image(systemName: "list.bullet")
-                    Text("Leaderboard")
+                    Image(systemName: "list.star")
+                    Text("Champions")
                 }
             ProfileView()
                 .tag("Profile")
@@ -47,6 +50,9 @@ struct FitnessTabView: View {
                     Image(systemName: "person.fill")
                     Text("Profile")
                 }
+        }
+        .onAppear {
+            showPage = userName == nil
         }
     }
 }

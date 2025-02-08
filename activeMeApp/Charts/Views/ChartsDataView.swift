@@ -108,7 +108,7 @@ struct ChartsDataView: View {
                     .padding(.horizontal)
                 }
             }
-            .padding(.bottom, 30)
+            .padding(.bottom, 50)
             
          
                 HStack {

@@ -80,7 +80,7 @@ class HealthManager {
         let predicate = HKQuery.predicateForSamples(withStart: .startOfDay, end: Date())
         let query = HKStatisticsQuery(quantityType: calories, quantitySamplePredicate: predicate) { _, results, error in
             guard let quantity = results?.sumQuantity(), error == nil else {
-                completion(.failure(NSError()))
+                completion(.failure(URLError(.badURL)))
                 return
             }
                
@@ -96,7 +96,7 @@ class HealthManager {
         let predicate = HKQuery.predicateForSamples(withStart: .startOfDay, end: Date())
         let query = HKStatisticsQuery(quantityType: exercise, quantitySamplePredicate: predicate) { _, results, error in
             guard let quantity = results?.sumQuantity(), error == nil else {
-                completion(.failure(NSError()))
+                completion(.failure(URLError(.badURL)))
                 return
             }
                
@@ -112,7 +112,7 @@ class HealthManager {
         let predicate = HKQuery.predicateForSamples(withStart: .startOfDay, end: Date())
         let query = HKSampleQuery(sampleType: stand, predicate: predicate, limit: HKObjectQueryNoLimit, sortDescriptors: nil) { _, results, error in
             guard let samples = results as? [HKCategorySample], error == nil else {
-                completion(.failure(NSError()))
+                completion(.failure(URLError(.badURL)))
                 return
                 
             }
@@ -131,7 +131,7 @@ class HealthManager {
         let predicate = HKQuery.predicateForSamples(withStart: .startOfDay, end: Date())
         let query = HKStatisticsQuery(quantityType: steps, quantitySamplePredicate: predicate) { _, results, error in
             guard let quantity = results?.sumQuantity(), error == nil else {
-                completion(.failure(NSError()))
+                completion(.failure(URLError(.badURL)))
                 return
             }
                
@@ -205,6 +205,10 @@ class HealthManager {
                 return
             }
             
+            // Print the fetched workouts
+                    for workout in workouts {
+                        print("Fetched Workout: \(workout.workoutActivityType.name) - \(workout.duration/60) mins")
+                    }
             
             let workoutsArray = workouts.map({ Workout(id: nil, tital: $0.workoutActivityType.name, image: $0.workoutActivityType.image, tintColor: $0.workoutActivityType.color, duration: "\(Int($0.duration)/60) mins", date: $0.startDate.formatWorkoutDate(), calories: ($0.totalEnergyBurned?.doubleValue(for: .kilocalorie()).formattedNumberString() ?? "-") + "kcal") })
             completion(.success(workoutsArray))
