@@ -1,5 +1,5 @@
 //
-//  ChampionsView.swift
+//  TopPerformersView.swift
 //  activeMeApp
 //
 //  Created by Tahera Akter Mukta on 02/02/2025.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ChampionsUsers: Codable, Identifiable {
+struct TopPerformersUsers: Codable, Identifiable {
     let id: Int
     let createdAt: String
     let username: String
@@ -15,30 +15,30 @@ struct ChampionsUsers: Codable, Identifiable {
 }
 
 
-class ChampionsViewModel: ObservableObject {
+class TopPerformersViewModel: ObservableObject {
     var mockData = [
-        ChampionsUsers(id: 1, createdAt: "", username: "Tahera", count: 7678),
-        ChampionsUsers(id: 2, createdAt: "", username: "Mukta", count: 7478),
-        ChampionsUsers(id: 3, createdAt: "", username: "Tamim", count: 7378),
-        ChampionsUsers(id: 4, createdAt: "", username: "Foysal", count: 7278),
-        ChampionsUsers(id: 5, createdAt: "", username: "Meera", count: 7178),
-        ChampionsUsers(id: 6, createdAt: "", username: "Mohammad", count: 7078),
-        ChampionsUsers(id: 7, createdAt: "", username: "Tasnim", count: 6878),
-        ChampionsUsers(id: 8, createdAt: "", username: "Motaher", count: 6678),
-        ChampionsUsers(id: 9, createdAt: "", username: "Hossain", count: 6378),
-        ChampionsUsers(id: 10, createdAt: "", username: "Tanny", count: 6178)
+        TopPerformersUsers(id: 1, createdAt: "", username: "Tahera", count: 7678),
+        TopPerformersUsers(id: 2, createdAt: "", username: "Mukta", count: 7478),
+        TopPerformersUsers(id: 3, createdAt: "", username: "Tamim", count: 7378),
+        TopPerformersUsers(id: 4, createdAt: "", username: "Foysal", count: 7278),
+        TopPerformersUsers(id: 5, createdAt: "", username: "Meera", count: 7178),
+        TopPerformersUsers(id: 6, createdAt: "", username: "Mohammad", count: 7078),
+        TopPerformersUsers(id: 7, createdAt: "", username: "Tasnim", count: 6878),
+        TopPerformersUsers(id: 8, createdAt: "", username: "Motaher", count: 6678),
+        TopPerformersUsers(id: 9, createdAt: "", username: "Hossain", count: 6378),
+        TopPerformersUsers(id: 10, createdAt: "", username: "Tanny", count: 6178)
     ]
     
 }
 
 
-struct ChampionsView: View {
-    @StateObject var viewModel = ChampionsViewModel()
+struct TopPerformersView: View {
+    @StateObject var viewModel = TopPerformersViewModel()
     @Binding var showPage: Bool
     
     var body: some View {
         VStack {
-            Text("Champions")
+            Text("Top Performers")
                 .font(.largeTitle)
                 .fontWeight(.bold)
                 .padding(.top)
@@ -82,9 +82,9 @@ struct ChampionsView: View {
     }
 }
 
-struct ChampionsView_Previews: PreviewProvider {
+struct TopPerformersView_Previews: PreviewProvider {
     static var previews: some View {
-        ChampionsView(showPage: .constant(false))
+        TopPerformersView(showPage: .constant(false))
             
     }
 }

@@ -16,11 +16,14 @@ struct FitnessTabView: View {
     init() {
         let appearance = UITabBarAppearance()
         appearance.configureWithOpaqueBackground()
-        let customGreen = UIColor(red: 28/255, green: 182/255, blue: 14/255, alpha: 1) // 1CB60E in RGB
+        let customGreen = UIColor(red: 15/255, green: 174/255, blue: 1/255, alpha: 1) // 1CB60E in RGB
         
         appearance.stackedLayoutAppearance.selected.iconColor = customGreen
-        appearance.stackedLayoutAppearance.selected.titleTextAttributes = [NSAttributedString.Key.foregroundColor: customGreen]
+        appearance.stackedLayoutAppearance.selected.titleTextAttributes = [ .foregroundColor: customGreen]
+        
+        UITabBar.appearance().standardAppearance = appearance
         UITabBar.appearance().scrollEdgeAppearance = appearance
+        UITabBar.appearance().tintColor = customGreen
         
     }
     
@@ -38,11 +41,11 @@ struct FitnessTabView: View {
                     Image(systemName: "chart.bar.xaxis.ascending")
                     Text("Charts")
                 }
-            ChampionsView(showPage: .constant(false))
-                .tag("Champions")
+            TopPerformersView(showPage: .constant(false))
+                .tag("Top Performers")
                 .tabItem {
                     Image(systemName: "list.star")
-                    Text("Champions")
+                    Text("Top Performers")
                 }
             ProfileView()
                 .tag("Profile")

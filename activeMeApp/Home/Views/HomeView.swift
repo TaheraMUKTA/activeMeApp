@@ -14,7 +14,7 @@ struct HomeView: View {
         NavigationStack {
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading) {
-                    Text("Welcome")
+                    Text("Welcome Tahera")
                         .font(.largeTitle)
                         .padding()
                     
@@ -82,8 +82,9 @@ struct HomeView: View {
                             Text("Show more")
                                 .padding(.all, 10)
                                 .foregroundColor(.white)
-                                .background(Color.green)
-                                .cornerRadius(20)
+                                .fontWeight(.bold)
+                                .background(Color(red: 15/255, green: 174/255, blue: 1/255))
+                                .cornerRadius(18)
                         }
                     }
                     .padding(.horizontal)
@@ -112,8 +113,9 @@ struct HomeView: View {
                             Text("Show more")
                                 .padding(.all, 10)
                                 .foregroundColor(.white)
-                                .background(Color.green)
-                                .cornerRadius(20)
+                                .fontWeight(.bold)
+                                .background(Color(red: 15/255, green: 174/255, blue: 1/255))
+                                .cornerRadius(18)
                         }
                         
                     }

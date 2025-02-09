@@ -15,7 +15,7 @@ struct BoardPageView: View {
     
     var body: some View {
         VStack {
-            Text("Champions")
+            Text("Top Performers")
                 .font(.largeTitle)
                 .fontWeight(.bold)
                 .padding(.top, 40)
