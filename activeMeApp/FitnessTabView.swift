@@ -59,7 +59,9 @@ struct FitnessTabView: View {
         }
     }
 }
-
-#Preview {
-    FitnessTabView()
+struct FitnessTabView_Previews: PreviewProvider {
+    static var previews: some View {
+        FitnessTabView()
+    }
 }
+

@@ -16,7 +16,7 @@ struct activeMeAppApp: App {
             ZStack {
                 FitnessTabView()
                     .opacity(showSplashScreen ? 0 : 1) // Hide Main View initially
-                            
+                
                 if showSplashScreen {
                     SplashScreenView()
                         .transition(.opacity)
