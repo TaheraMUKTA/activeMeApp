@@ -58,6 +58,8 @@ class HealthManager {
         Task {
             do {
                 try await requestHealthKitAccess()
+                enableBackgroundDelivery()
+                startObservingHealthData()
             } catch {
                 print(error.localizedDescription)
             }
@@ -124,6 +126,82 @@ class HealthManager {
         
         healthStore.execute(query)
     }
+    
+    func fetchHourlyCaloriesBurned(completion: @escaping(Result<[Int: Double], Error>) -> Void) {
+        let calories = HKQuantityType(.activeEnergyBurned)
+        let calendar = Calendar.current
+        let now = Date()
+
+        let predicate = HKQuery.predicateForSamples(withStart: .startOfDay, end: now)
+
+        let query = HKStatisticsCollectionQuery(
+            quantityType: calories,
+            quantitySamplePredicate: predicate,
+            options: .cumulativeSum,
+            anchorDate: Date.startOfDay,
+            intervalComponents: DateComponents(hour: 1)
+        )
+
+        query.initialResultsHandler = { _, results, error in
+            guard let results = results, error == nil else {
+                completion(.failure(error ?? URLError(.badURL)))
+                return
+            }
+
+            var hourlyData: [Int: Double] = [:]
+
+            results.enumerateStatistics(from: .startOfDay, to: now) { statistics, _ in
+                let hour = calendar.component(.hour, from: statistics.startDate)
+                let value = statistics.sumQuantity()?.doubleValue(for: .kilocalorie()) ?? 0
+                hourlyData[hour] = value > 0 ? value : nil // Only store non-zero values
+            }
+
+            completion(.success(hourlyData))
+        }
+
+        healthStore.execute(query)
+    }
+    
+    
+    func fetchHourlyExerciseTime(completion: @escaping(Result<[Int: Double], Error>) -> Void) {
+        let exercise = HKQuantityType(.appleExerciseTime)
+        let calendar = Calendar.current
+        let now = Date()
+
+        let predicate = HKQuery.predicateForSamples(withStart: .startOfDay, end: now)
+
+        let query = HKStatisticsCollectionQuery(
+            quantityType: exercise,
+            quantitySamplePredicate: predicate,
+            options: .cumulativeSum,
+            anchorDate: Date.startOfDay,
+            intervalComponents: DateComponents(hour: 1)
+        )
+
+        query.initialResultsHandler = { _, results, error in
+            guard let results = results, error == nil else {
+                completion(.failure(error ?? URLError(.badURL)))
+                return
+            }
+
+            var hourlyData: [Int: Double] = [:]
+
+            results.enumerateStatistics(from: .startOfDay, to: now) { statistics, _ in
+                let hour = calendar.component(.hour, from: statistics.startDate)
+                if let value = statistics.sumQuantity()?.doubleValue(for: .minute()), value > 0 {
+                    hourlyData[hour] = value
+                }
+            }
+
+            DispatchQueue.main.async {
+                completion(.success(hourlyData))
+            }
+        }
+
+        healthStore.execute(query)
+    }
+
+
     
 //    func fetchCaloriesForWeek(completion: @escaping(Result<[Double], Error>) -> Void) {
 //            let calories = HKQuantityType(.activeEnergyBurned)
@@ -271,6 +349,55 @@ class HealthManager {
         }
         healthStore.execute(query)
     }
+    
+    
+    
+    func enableBackgroundDelivery() {
+        let healthTypes: [HKObjectType] = [
+            HKObjectType.quantityType(forIdentifier: .activeEnergyBurned)!,
+            HKObjectType.quantityType(forIdentifier: .appleExerciseTime)!,
+            HKObjectType.quantityType(forIdentifier: .stepCount)!
+        ]
+        
+        for type in healthTypes {
+            healthStore.enableBackgroundDelivery(for: type, frequency: .hourly) { success, error in
+                if let error = error {
+                    print("Failed to enable background delivery: \(error.localizedDescription)")
+                } else {
+                    print("Background delivery enabled for \(type.identifier)")
+                }
+            }
+        }
+    }
+
+    
+    func startObservingHealthData() {
+        let healthTypes: [HKSampleType] = [
+            HKObjectType.quantityType(forIdentifier: .activeEnergyBurned)!,
+            HKObjectType.quantityType(forIdentifier: .appleExerciseTime)!,
+            HKObjectType.quantityType(forIdentifier: .stepCount)!
+        ]
+        
+        for type in healthTypes {
+            let query = HKObserverQuery(sampleType: type, predicate: nil) { query, completionHandler, error in
+                if let error = error {
+                    print("Observer query error: \(error.localizedDescription)")
+                    return
+                }
+                
+                print("HealthKit data updated for: \(type.identifier)")
+                
+                // Fetch updated data and refresh UI
+                Task {
+                    await HomeViewModel.shared.refreshAllData()
+                }
+                
+                completionHandler() // Must call this when done
+            }
+            healthStore.execute(query)
+        }
+    }
+
     
     
 }
