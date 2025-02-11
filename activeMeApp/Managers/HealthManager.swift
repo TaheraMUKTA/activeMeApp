@@ -125,6 +125,61 @@ class HealthManager {
         healthStore.execute(query)
     }
     
+//    func fetchCaloriesForWeek(completion: @escaping(Result<[Double], Error>) -> Void) {
+//            let calories = HKQuantityType(.activeEnergyBurned)
+//            let startOfWeek = Calendar.current.date(byAdding: .day, value: -7, to: Date())!
+//            let predicate = HKQuery.predicateForSamples(withStart: startOfWeek, end: Date())
+//            
+//            let query = HKStatisticsCollectionQuery(quantityType: calories, quantitySamplePredicate: predicate,
+//                options: .cumulativeSum, anchorDate: startOfWeek, intervalComponents: DateComponents(day: 1))
+//
+//            query.initialResultsHandler = { _, results, error in
+//                guard let results = results, error == nil else {
+//                    completion(.failure(error ?? NSError()))
+//                    return
+//                }
+//
+//                var data: [Double] = []
+//                results.enumerateStatistics(from: startOfWeek, to: Date()) { stat, _ in
+//                    let value = stat.sumQuantity()?.doubleValue(for: .kilocalorie()) ?? 0
+//                    data.append(value)
+//                }
+//
+//                completion(.success(data))
+//            }
+//
+//            healthStore.execute(query)
+//        }
+    
+//    func fetchActiveMinutesForWeek(completion: @escaping(Result<[Double], Error>) -> Void) {
+//            let exerciseTime = HKQuantityType(.appleExerciseTime)
+//            let startOfWeek = Calendar.current.date(byAdding: .day, value: -7, to: Date())!
+//            let predicate = HKQuery.predicateForSamples(withStart: startOfWeek, end: Date())
+//            
+//            let query = HKStatisticsCollectionQuery(quantityType: exerciseTime, quantitySamplePredicate: predicate,
+//                options: .cumulativeSum, anchorDate: startOfWeek, intervalComponents: DateComponents(day: 1))
+//
+//            query.initialResultsHandler = { _, results, error in
+//                guard let results = results, error == nil else {
+//                    completion(.failure(error ?? NSError()))
+//                    return
+//                }
+//
+//                var data: [Double] = []
+//                results.enumerateStatistics(from: startOfWeek, to: Date()) { stat, _ in
+//                    let value = stat.sumQuantity()?.doubleValue(for: .minute()) ?? 0
+//                    data.append(value)
+//                }
+//
+//                completion(.success(data))
+//            }
+//
+//            healthStore.execute(query)
+//        }
+    
+    
+    
+    
     // MARK: Fitness Activity
     func fetchTodaySteps(completion: @escaping(Result<Activity, Error>) -> Void) {
         let steps = HKQuantityType(.stepCount)

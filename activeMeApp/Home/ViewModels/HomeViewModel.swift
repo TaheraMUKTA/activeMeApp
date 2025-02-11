@@ -14,6 +14,10 @@ class HomeViewModel: ObservableObject {
     @Published var calories: Int = 0
     @Published var exercise: Int = 0
     @Published var stand: Int = 0
+    //@Published var caloriesData: [Double] = []
+   // @Published var activeMinutesData: [Double] = []
+    @Published var todayCalories: [Double] = Array(repeating: 0, count: 24)
+    @Published var todayActiveMinutes: [Double] = Array(repeating: 0, count: 24)
     @Published var activities = [Activity]()
     @Published var workouts = [Workout]()
     
@@ -41,6 +45,8 @@ class HomeViewModel: ObservableObject {
                 fetchTodaySteps()
                 fetchCurrentWeekActivities()
                 fetchRecentWorkouts()
+                //fetchCaloriesOverTime()
+                //fetchActiveMinutesOverTime()
                
             } catch {
                 print(error.localizedDescription)
@@ -55,8 +61,12 @@ class HomeViewModel: ObservableObject {
             case .success(let calories):
                 DispatchQueue.main.async {
                     self.calories = Int(calories)
+                    self.todayCalories = Array(repeating: 0, count: 24) // Default empty array
+                    let hour = Calendar.current.component(.hour, from: Date()) // Get current hour
+                    self.todayCalories[hour] = calories
                     let activity = Activity(title: "Calories Burned", subtitle: "Today", image: "flame", tintColor: .red, amount: calories.formattedNumberString())
                     self.activities.append(activity)
+                    print("Updated Calories Data: \(self.todayCalories)")
                 }
             case .failure(let failure):
                 print(failure.localizedDescription)
@@ -71,12 +81,45 @@ class HomeViewModel: ObservableObject {
             case .success(let exercise):
                 DispatchQueue.main.async {
                     self.exercise = Int(exercise)
+                    self.todayActiveMinutes = Array(repeating: 0, count: 24) // Default empty array
+                    let hour = Calendar.current.component(.hour, from: Date()) // Get current hour
+                    self.todayActiveMinutes[hour] = exercise
+                    print("Updated Active Minutes Data: \(self.todayActiveMinutes)")
                 }
             case .failure(let failure):
                 print(failure.localizedDescription)
             }
         }
     }
+    
+//    
+//    func fetchCaloriesOverTime() {
+//            healthManager.fetchCaloriesForWeek { result in
+//                switch result {
+//                case .success(let data):
+//                    DispatchQueue.main.async {
+//                        self.caloriesData = data
+//                    }
+//                case .failure(let error):
+//                    print(error.localizedDescription)
+//                }
+//            }
+//        }
+//    
+//    func fetchActiveMinutesOverTime() {
+//            healthManager.fetchActiveMinutesForWeek { result in
+//                switch result {
+//                case .success(let data):
+//                    DispatchQueue.main.async {
+//                        self.activeMinutesData = data
+//                    }
+//                case .failure(let error):
+//                    print(error.localizedDescription)
+//                }
+//            }
+//        }
+    
+    
     
     func fetchTodayStandHours() {
         healthManager.fetchTodayStandHours { result in

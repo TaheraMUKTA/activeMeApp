@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Charts
 
 struct HomeView: View {
     @StateObject var viewModel = HomeViewModel()
@@ -14,60 +15,87 @@ struct HomeView: View {
         NavigationStack {
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading) {
-                    Text("Welcome Tahera")
-                        .font(.largeTitle)
-                        .padding()
-                    
                     HStack {
-                        
+                        Text("Good Morning Tahera")
+                            .font(.title)
+                            .fontWeight(.bold)
+                            .padding()
                         Spacer()
-                        
-                        VStack(alignment: .leading) {
+                        Button(action: {
+                            print("Edit button tapped")
+                        }) {
+                            Text("Edit")
+                                .font(.headline)
+                                .foregroundColor(.green)
+                                .padding(.horizontal)
+                        }
+                    }
+                    .padding(.top, 10)
+                    .padding(.bottom, 20)
+                    
+                
+                    
+                    VStack(spacing: 5) {
+                            
+                        HStack {
                             VStack(alignment: .leading, spacing: 8) {
                                 Text("Calories")
-                                    .font(.callout)
+                                    .font(.headline)
                                     .bold()
                                     .foregroundColor(.red.opacity(0.6))
-                                Text("\(viewModel.calories)")
+                                Text("\(viewModel.calories) kcal")
                                     .bold()
                             }
-                            .padding(.bottom)
+                            .padding()
+                            Spacer()
                             
-                            VStack(alignment: .leading, spacing: 8) {
-                                Text("Active")
-                                    .font(.callout)
-                                    .bold()
-                                    .foregroundColor(.green.opacity(0.8))
-                                Text("\(viewModel.exercise)")
-                                    .bold()
-                            }
-                            .padding(.bottom)
-                            
-                            VStack(alignment: .leading, spacing: 8) {
-                                Text("Stand")
-                                    .font(.callout)
-                                    .bold()
-                                    .foregroundColor(.blue.opacity(0.8))
-                                Text("\(viewModel.stand)")
-                                    .bold()
-                            }
-                            .padding(.bottom)
-                            
-                        }
-                        Spacer()
-                        
-                        ZStack {
-                            ProgressCircleView(progress: $viewModel.calories, goal: 600, color: .red)
-                            ProgressCircleView(progress: $viewModel.exercise, goal: 60, color: .green)
-                                .padding(.all, 20)
-                            ProgressCircleView(progress: $viewModel.stand, goal: 12, color: .blue)
-                                .padding(.all, 40)
+                            LineChartView(data: viewModel.todayCalories, color: .red)
+                                    .frame(width: 230, height: 60)
+                                    .padding(.horizontal, 10)
                             
                         }
                         .padding(.horizontal)
+                        .padding(.bottom, 40)
+                       
                         Spacer()
+                        
+                            HStack {
+                                VStack(alignment: .leading, spacing: 8) {
+                                    Text("Active")
+                                        .font(.headline)
+                                        .bold()
+                                        .foregroundColor(.green.opacity(0.8))
+                                    Text("\(viewModel.exercise) mins")
+                                        .bold()
+                                }.padding()
+                               
+                                Spacer()
+                                BarChartView(data: viewModel.todayActiveMinutes, color: .green)
+                                    .frame(width: 230, height: 60)
+                                    .padding(.horizontal, 10)
+                                
+                            }
+                            .padding(.horizontal)
+                            .padding(.bottom, -50)
+                            
+                        HStack {
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("Stand")
+                                    .font(.headline)
+                                    .bold()
+                                    .foregroundColor(.blue.opacity(0.8))
+                                Text("\(viewModel.stand) hours")
+                                    .bold()
+                            }
+                            .padding(.leading, 15)
+                            
+                            ProgressCircleView(progress: $viewModel.stand, goal: 12, color: .blue)
+                                .padding(.all, 70)
+                            
+                        }
+                        .padding(.horizontal, 20)
                     }
-                    .padding()
+                    .padding(.bottom, -65)
                     
                     HStack {
                         Text("Fitness Activity")
