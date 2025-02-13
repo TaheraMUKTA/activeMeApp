@@ -10,16 +10,17 @@ import SwiftUI
 struct SignInView: View {
     @State private var email: String = ""
     @State private var password: String = ""
+    @State private var showLottie = false
 
         var body: some View {
             VStack {
                 
-                
-                // Gym Emoji Icon
-                LottieView(animationName: "dumbbell", width: 150, height: 150)
-                    .frame(width: 200, height: 150)
-                    .padding(.bottom, 30)
-                    .padding(.top, 60)
+                if showLottie {
+                    LottieView(animationName: "dumbbell", width: 150, height: 150)
+                        .frame(width: 200, height: 150)
+                        .padding(.bottom, 30)
+                        .padding(.top, 60)
+                }
                 
                 // Email Field
                 VStack(alignment: .leading, spacing: 8) {
@@ -97,6 +98,11 @@ struct SignInView: View {
                         .foregroundColor(Color(red: 15/255, green: 174/255, blue: 1/255))
                 }
                 .padding(.bottom, 20)
+            }
+            .onAppear {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    showLottie = true // Prevents immediate crash
+                }
             }
         }
 }

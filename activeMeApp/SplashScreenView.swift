@@ -8,12 +8,15 @@
 import SwiftUI
 
 struct SplashScreenView: View {
+    @State private var showAnimation = false
     var body: some View {
         VStack {
-                    // Now Lottie animation will properly resize
-                    LottieView(animationName: "dumbbell", width: 150, height: 150)
-                        .frame(width: 200, height: 150)
-                        .padding(.bottom, -50)
+                    
+            if showAnimation {
+                LottieView(animationName: "dumbbell", width: 150, height: 150)
+                    .frame(width: 200, height: 150)
+                    .padding(.bottom, -50)
+            }
 
                     VStack {
                         Text("activeMe")
@@ -31,6 +34,11 @@ struct SplashScreenView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(Color.white)
+                .onAppear {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                        showAnimation = true
+                    }
+                }
             }
 }
 

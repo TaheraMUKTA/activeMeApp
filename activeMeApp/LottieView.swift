@@ -12,10 +12,11 @@ struct LottieView: UIViewRepresentable {
     var animationName: String
     var width: CGFloat
     var height: CGFloat
+    
+    private let animationView = LottieAnimationView()
 
     func makeUIView(context: Context) -> UIView {
         let containerView = UIView(frame: CGRect(x: 0, y: 0, width: width, height: height))
-        let animationView = LottieAnimationView()
         
         animationView.animation = LottieAnimation.named(animationName)
         animationView.contentMode = .scaleAspectFit
@@ -37,4 +38,10 @@ struct LottieView: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: UIView, context: Context) {}
+    
+    static func dismantleUIView(_ uiView: UIView, coordinator: ()) {
+            if let animationView = uiView.subviews.first as? LottieAnimationView {
+                animationView.stop()
+            }
+        }
 }

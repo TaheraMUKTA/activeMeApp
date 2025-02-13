@@ -8,14 +8,20 @@
 import SwiftUI
 
 struct NewPasswordView: View {
+    @State private var showLottie = false
+    
     var body: some View {
         VStack {
-                   Spacer().frame(height: 30)
-            LottieView(animationName: "dumbbell", width: 150, height: 150)
-                .frame(width: 170, height: 120)
-                .padding(.bottom, -20)
-                .padding(.top, 20)
-                   Spacer().frame(height: 30)
+            Spacer().frame(height: 30)
+            
+            if showLottie {
+                LottieView(animationName: "dumbbell", width: 150, height: 150)
+                    .frame(width: 170, height: 120)
+                    .padding(.bottom, -20)
+                    .padding(.top, 20)
+            }
+            
+            Spacer().frame(height: 30)
 
                    Text("New Password")
                        .font(.title)
@@ -78,6 +84,11 @@ struct NewPasswordView: View {
 
                    Spacer().frame(height: 20)
                }
+                .onAppear {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        showLottie = true
+                    }
+                }
     }
 }
 

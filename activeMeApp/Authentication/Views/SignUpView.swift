@@ -8,19 +8,23 @@
 import SwiftUI
 
 struct SignUpView: View {
+    @State private var showLottie = false
+    
     var body: some View {
         ScrollView {
-                    VStack {
+            VStack {
                         Spacer().frame(height: 30)
 
-                        LottieView(animationName: "dumbbell", width: 150, height: 150)
-                            .frame(width: 170, height: 120)
-                            .padding(.bottom, -20)
-                            .padding(.top, -40)
+                        if showLottie {
+                            LottieView(animationName: "dumbbell", width: 150, height: 150)
+                                .frame(width: 170, height: 120)
+                                .padding(.bottom, -20)
+                                .padding(.top, -40)
 
+                        }
                         Spacer().frame(height: 30)
 
-                        VStack(alignment: .leading, spacing: 10) {
+                        VStack(alignment: .leading, spacing: 35) {
                             InputField(title: "Email Address", placeholder: "name@example.com")
                             InputField(title: "Full Name", placeholder: "Enter your name")
                             InputField(title: "DOB", placeholder: "Enter your Date of Birth", isDatePicker: true)
@@ -68,6 +72,11 @@ struct SignUpView: View {
                         .font(.system(size: 14))
 
                         Spacer().frame(height: 20)
+                    }
+                }
+                .onAppear {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        showLottie = true 
                     }
                 }
     }

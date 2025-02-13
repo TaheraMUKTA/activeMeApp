@@ -8,14 +8,18 @@
 import SwiftUI
 
 struct PasswordResetView: View {
+    @State private var showLottie = false
+    
     var body: some View {
         VStack {
             Spacer().frame(height: 30)
 
-            LottieView(animationName: "dumbbell", width: 150, height: 150)
-                .frame(width: 170, height: 120)
-                .padding(.bottom, -20)
-                .padding(.top, 10)
+            if showLottie {
+                LottieView(animationName: "dumbbell", width: 150, height: 150)
+                    .frame(width: 170, height: 120)
+                    .padding(.bottom, -20)
+                    .padding(.top, 10)
+            }
 
             Spacer().frame(height: 70)
 
@@ -63,6 +67,11 @@ struct PasswordResetView: View {
                     .padding(.horizontal, 30)
 
                     Spacer()
+                }
+                .onAppear {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        showLottie = true
+                    }
                 }
     }
 }
