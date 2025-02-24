@@ -51,20 +51,9 @@ struct PasswordResetView: View {
 
                     Spacer().frame(height: 70)
 
-                    Button(action: {}) {
-                        HStack {
-                            Text("BACK TO SIGN IN")
-                                .font(.headline)
-                                .bold()
-                            Image(systemName: "arrow.right")
-                        }
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color(red: 15/255, green: 174/255, blue: 1/255))
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
+                    ButtonView(title: "BACK TO SIGN IN", image: "arrow.right") {
+                        print("Back to sign in...")
                     }
-                    .padding(.horizontal, 30)
 
                     Spacer()
                 }

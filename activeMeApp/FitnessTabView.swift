@@ -9,6 +9,7 @@ import SwiftUI
 
 struct FitnessTabView: View {
     @AppStorage("userName") var userName: String?
+    @EnvironmentObject var viewModel: AuthViewModel
     
     @State var selectedTab = "Home"
     @State var showPage = true
@@ -47,12 +48,15 @@ struct FitnessTabView: View {
                     Image(systemName: "list.star")
                     Text("Top Performers")
                 }
+            
+           
             ProfileView()
                 .tag("Profile")
                 .tabItem {
                     Image(systemName: "person.fill")
                     Text("Profile")
                 }
+            
         }
         .onAppear {
             showPage = userName == nil
@@ -62,6 +66,7 @@ struct FitnessTabView: View {
 struct FitnessTabView_Previews: PreviewProvider {
     static var previews: some View {
         FitnessTabView()
+            .environmentObject(AuthViewModel())
     }
 }
 

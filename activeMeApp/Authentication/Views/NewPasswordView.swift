@@ -9,6 +9,9 @@ import SwiftUI
 
 struct NewPasswordView: View {
     @State private var showLottie = false
+    @State private var password: String = ""
+    @State private var confirmPassword: String = ""
+    @Environment(\.dismiss) var dismiss
     
     var body: some View {
         VStack {
@@ -31,58 +34,37 @@ struct NewPasswordView: View {
 
                    Spacer().frame(height: 50)
 
-                   VStack(alignment: .leading, spacing: 10) {
-                       Text("Create New Password")
-                           .font(.headline)
-                           .bold()
+                   VStack(alignment: .leading, spacing: 12) {
+                       InputView(text: $password, title: "Password", placeholder: "Enter your new password", isSecureTextEntry: true)
+                       
+                       InputView(text: $confirmPassword, title: "Confirm Password", placeholder: "Confirm your new password", isSecureTextEntry: true)
 
-                       SecureField("Enter your new password", text: .constant(""))
-                           .textFieldStyle(PlainTextFieldStyle())
-                           .padding(.vertical, 10)
-                           .overlay(Rectangle().frame(height: 1).foregroundColor(.gray), alignment: .bottom)
-
-                       Spacer().frame(height: 20)
-
-                       Text("Confirm Your Password")
-                           .font(.headline)
-                           .bold()
-
-                       SecureField("Confirm your new password", text: .constant(""))
-                           .textFieldStyle(PlainTextFieldStyle())
-                           .padding(.vertical, 10)
-                           .overlay(Rectangle().frame(height: 1).foregroundColor(.gray), alignment: .bottom)
                    }
                    .padding(.horizontal, 30)
-                   .padding()
 
-                   Spacer().frame(height: 30)
 
-                   Button(action: {}) {
-                       HStack {
-                           Text("RESET PASSWORD")
-                               .font(.headline)
-                               .bold()
-                           Image(systemName: "arrow.right")
-                       }
-                       .frame(maxWidth: .infinity)
-                       .padding()
-                       .background(Color(red: 15/255, green: 174/255, blue: 1/255))
-                       .foregroundColor(.white)
-                       .cornerRadius(10)
-                   }
-                   .padding(.horizontal, 30)
+                   Spacer().frame(height: 20)
+
+                    ButtonView(title: "RESET PASSWORD", image: "arrow.right") {
+                        print("Resetting password...")
+                    }
 
                    Spacer()
 
-                   HStack {
-                       Text("Remember your password?")
-                       Text("Sign In")
-                           .foregroundColor(Color(red: 15/255, green: 174/255, blue: 1/255))
-                           .bold()
-                   }
-                   .font(.system(size: 14))
+                    Button {
+                        dismiss()
+                    } label: {
+                        HStack(spacing: 3) {
+                            Text("Already have an account?")
+                                .font(.system(size: 14))
+                                .foregroundColor(.black)
+                    
+                            Text("Sign In")
+                                .font(.system(size: 14, weight: .bold))
+                                .foregroundColor(Color(red: 15/255, green: 174/255, blue: 1/255))
+                        }
+                    }
 
-                   Spacer().frame(height: 20)
                }
                 .onAppear {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
