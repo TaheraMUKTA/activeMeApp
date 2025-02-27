@@ -13,6 +13,10 @@ struct ProfileButtonView: View {
     var action: (() -> Void)
     
     var body: some View {
+        let adaptiveColor = Color(UIColor { traitCollection in
+            return traitCollection.userInterfaceStyle == .dark ? .white : .black
+        })
+        
         VStack {
             Button {
                 action()
@@ -21,7 +25,7 @@ struct ProfileButtonView: View {
                     Image(systemName: image)
                         .foregroundColor(Color(red: 15/255, green: 174/255, blue: 1/255))
                     Text(title)
-                        .foregroundColor(.black)
+                        .foregroundColor(adaptiveColor)
                     
                 }
                 

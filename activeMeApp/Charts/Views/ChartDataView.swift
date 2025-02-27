@@ -12,6 +12,10 @@ struct ChartDataView: View {
     @State var total: Int
     
     var body: some View {
+        let adaptiveColor = Color(UIColor { traitCollection in
+            return traitCollection.userInterfaceStyle == .dark ? .white : .black
+        })
+        
         HStack {
             Spacer()
             VStack(spacing: 15) {
@@ -23,7 +27,7 @@ struct ChartDataView: View {
             .padding()
             .frame(width: 130)
             .background(Color.gray.opacity(0.1))
-            .foregroundColor(.black)
+            .foregroundColor(adaptiveColor)
             .cornerRadius(10)
             
             
@@ -38,7 +42,7 @@ struct ChartDataView: View {
             .padding()
             .frame(width: 130)
             .background(Color.gray.opacity(0.1))
-            .foregroundColor(.black)
+            .foregroundColor(adaptiveColor)
             .cornerRadius(10)
             
             Spacer()
@@ -50,6 +54,6 @@ struct ChartDataView: View {
 
 struct ChartDataView_Previews: PreviewProvider {
     static var previews: some View {
-        ChartDataView(average: 01243, total: 8968) 
+        ChartDataView(average: 01243, total: 8968)
     }
 }

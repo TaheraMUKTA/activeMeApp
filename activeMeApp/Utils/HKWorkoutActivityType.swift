@@ -29,6 +29,8 @@ extension HKWorkoutActivityType {
         case .curling:                      return "Curling"
         case .cycling:                      return "Cycling"
         case .dance:                        return "Dance"
+        case .socialDance:                  return "Dance"
+        case .cardioDance:                  return "Dance"
         case .danceInspiredTraining:        return "Dance Inspired Training"
         case .elliptical:                   return "Elliptical"
         case .equestrianSports:             return "Equestrian Sports"
@@ -117,6 +119,8 @@ extension HKWorkoutActivityType {
             case .crossTraining: return "figure.strengthtraining.traditional"
             case .cycling: return "figure.outdoor.cycle"
             case .dance: return "figure.dance"
+            case .socialDance: return "figure.dance"
+            case .cardioDance: return "figure.dance"
             case .elliptical: return "figure.elliptical"
             case .fencing: return "figure.fencing"
             case .fishing: return "fish"
@@ -129,7 +133,7 @@ extension HKWorkoutActivityType {
             case .rowing: return "figure.rowing"
             case .rugby: return "sportscourt"
             case .running: return "figure.run"
-            case .skatingSports: return "figure.skating"
+            case .stairs: return "figure.stairs"
             case .snowSports: return "snowflake"
             case .soccer: return "soccerball"
             case .softball: return "figure.softball"
@@ -164,7 +168,9 @@ extension HKWorkoutActivityType {
             case .climbing: return .yellow
             case .crossTraining: return .pink
             case .cycling: return .cyan
-            case .dance: return .mint
+            case .dance: return .pink
+            case .socialDance: return .pink
+            case .cardioDance: return .pink
             case .elliptical: return .teal
             case .fencing: return .indigo
             case .fishing: return .blue
@@ -177,7 +183,7 @@ extension HKWorkoutActivityType {
             case .rowing: return .blue
             case .rugby: return .red
             case .running: return .orange
-            case .skatingSports: return .cyan
+            case .stairs: return .blue
             case .snowSports: return .white
             case .soccer: return .green
             case .softball: return .yellow

@@ -189,46 +189,51 @@ struct ProfileView: View {
 
                         
                         // Privacy Policy Button
-                        VStack {
-                            NavigationLink {
-                                PrivacyView()
-                            } label: {
-                                HStack {
-                                    Image(systemName: "doc.text")
-                                        .foregroundColor(Color(red: 15/255, green: 174/255, blue: 1/255))
-                                    Text("Privacy Policy")
-                                        .foregroundColor(.black)
-                                    
+                       
+                            let adaptiveColor = Color(UIColor { traitCollection in
+                                return traitCollection.userInterfaceStyle == .dark ? .white : .black
+                            })
+                            VStack {
+                                NavigationLink {
+                                    PrivacyView()
+                                } label: {
+                                    HStack {
+                                        Image(systemName: "doc.text")
+                                            .foregroundColor(Color(red: 15/255, green: 174/255, blue: 1/255))
+                                        Text("Privacy Policy")
+                                            .foregroundColor(adaptiveColor)
+                                        
+                                    }
+                                    .padding()
+                                    .frame(maxWidth: .infinity, alignment: .leading)
                                 }
-                                .padding()
-                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .background( RoundedRectangle(cornerRadius: 10)
+                                    .fill(.gray.opacity(0.1)))
+                                .padding(.horizontal, 5)
                             }
-                            .background( RoundedRectangle(cornerRadius: 10)
-                                .fill(.gray.opacity(0.1)))
-                            .padding(.horizontal, 5)
-                        }
-
-                        
-                        // Terms & Conditions Button
-                        VStack {
-                            NavigationLink {
-                                ConditionView()
-                            } label: {
-                                HStack {
-                                    Image(systemName: "document")
-                                        .foregroundColor(Color(red: 15/255, green: 174/255, blue: 1/255))
-                                    Text("Terms & Conditions")
-                                        .foregroundColor(.black)
-                                    
+                            
+                            
+                            
+                            // Terms & Conditions Button
+                            VStack {
+                                NavigationLink {
+                                    ConditionView()
+                                } label: {
+                                    HStack {
+                                        Image(systemName: "document")
+                                            .foregroundColor(Color(red: 15/255, green: 174/255, blue: 1/255))
+                                        Text("Terms & Conditions")
+                                            .foregroundColor(adaptiveColor)
+                                        
+                                    }
+                                    .padding()
+                                    .frame(maxWidth: .infinity, alignment: .leading)
                                 }
-                                .padding()
-                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .background( RoundedRectangle(cornerRadius: 10)
+                                    .fill(.gray.opacity(0.1)))
+                                .padding(.horizontal, 5)
                             }
-                            .background( RoundedRectangle(cornerRadius: 10)
-                                .fill(.gray.opacity(0.1)))
-                            .padding(.horizontal, 5)
-                        }
-                        
+                            
                         
                         // Sign Out Button with Alert
                         ProfileButtonView(image: "iphone.and.arrow.forward.outward", title: "Sign Out") {

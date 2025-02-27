@@ -9,15 +9,17 @@ import SwiftUI
 import Charts
 
 struct HomeView: View {
-    @StateObject var viewModel = HomeViewModel()
+    @StateObject var homeViewModel = HomeViewModel()
+    @EnvironmentObject var viewModel: AuthViewModel
+    
 
     var body: some View {
         NavigationStack {
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading) {
                     HStack {
-                        Text("Good Morning Tahera")
-                            .font(.title)
+                        Text("\(GreetingHelper.greeting) \(viewModel.currentUser?.profileName ?? "User")")
+                            .font(.title2)
                             .fontWeight(.bold)
                             .padding()
                         Spacer()
@@ -43,13 +45,13 @@ struct HomeView: View {
                                     .font(.headline)
                                     .bold()
                                     .foregroundColor(.red.opacity(0.6))
-                                Text("\(viewModel.calories) kcal")
+                                Text("\(homeViewModel.calories) kcal")
                                     .bold()
                             }
                             .padding()
                             Spacer()
                             
-                            LineChartView(data: viewModel.todayCalories, color: .red)
+                            LineChartView(data: homeViewModel.todayCalories, color: .red)
                                     .frame(width: 230, height: 60)
                                     .padding(.horizontal, 10)
                             
@@ -65,12 +67,12 @@ struct HomeView: View {
                                         .font(.headline)
                                         .bold()
                                         .foregroundColor(.green.opacity(0.8))
-                                    Text("\(viewModel.exercise) mins")
+                                    Text("\(homeViewModel.exercise) mins")
                                         .bold()
                                 }.padding()
                                
                                 Spacer()
-                                BarChartView(data: viewModel.todayActiveMinutes, color: .green)
+                                BarChartView(data: homeViewModel.todayActiveMinutes, color: .green)
                                     .frame(width: 230, height: 60)
                                     .padding(.horizontal, 10)
                                 
@@ -84,12 +86,12 @@ struct HomeView: View {
                                     .font(.headline)
                                     .bold()
                                     .foregroundColor(.blue.opacity(0.8))
-                                Text("\(viewModel.stand) hours")
+                                Text("\(homeViewModel.stand) hours")
                                     .bold()
                             }
                             .padding(.leading, 15)
                             
-                            ProgressCircleView(progress: $viewModel.stand, goal: 12, color: .blue)
+                            ProgressCircleView(progress: $homeViewModel.stand, goal: 12, color: .blue)
                                 .padding(.all, 70)
                             
                         }
@@ -117,9 +119,9 @@ struct HomeView: View {
                     }
                     .padding(.horizontal)
                     
-                    if !viewModel.activities.isEmpty {
+                    if !homeViewModel.activities.isEmpty {
                         LazyVGrid(columns: Array(repeating: GridItem(spacing: 20), count: 2)) {
-                            ForEach(viewModel.activities, id: \.title) { activity in
+                            ForEach(homeViewModel.activities, id: \.title) { activity in
                                 ActivityCardView(activity: activity)
                                 
                             }
@@ -151,12 +153,11 @@ struct HomeView: View {
                     .padding(.top)
                     
                     LazyVStack {
-                        ForEach(viewModel.workouts, id: \.id) { workout in
+                        ForEach(homeViewModel.workouts, id: \.id) { workout in
                             WorkoutCardView(workout: workout)
                             
                         }
                     }
-                    .padding(.bottom)
                 }
                 
             }
@@ -167,6 +168,6 @@ struct HomeView: View {
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
         HomeView()
-            
+            .environmentObject(AuthViewModel())
     }
 }

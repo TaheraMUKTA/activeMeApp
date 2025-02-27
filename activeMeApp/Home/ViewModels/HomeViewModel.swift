@@ -14,8 +14,6 @@ class HomeViewModel: ObservableObject {
     @Published var calories: Int = 0
     @Published var exercise: Int = 0
     @Published var stand: Int = 0
-    //@Published var caloriesData: [Double] = []
-   // @Published var activeMinutesData: [Double] = []
     @Published var todayCalories: [Double?] = Array(repeating: nil, count: 24)
     @Published var todayActiveMinutes: [Double?] = Array(repeating: nil, count: 24)
     @Published var activities = [Activity]()
@@ -58,8 +56,8 @@ class HomeViewModel: ObservableObject {
         fetchTodaySteps()
         fetchCurrentWeekActivities()
         fetchRecentWorkouts()
-        //fetchCaloriesOverTime()
-        //fetchActiveMinutesOverTime()
+        fetchTodayActiveTime()
+        fetchTodayStandTime()
     }
     
     func refreshAllData() async {
@@ -78,7 +76,12 @@ class HomeViewModel: ObservableObject {
                 DispatchQueue.main.async {
                     self.calories = Int(calories)
                     
-                    let activity = Activity(title: "Calories Burned", subtitle: "Today", image: "flame", tintColor: .red, amount: calories.formattedNumberString())
+                    let activity = Activity(
+                        title: "Calories Burned",
+                        subtitle: "Today",
+                        image: "flame",
+                        tintColor: .red,
+                        amount: "\(calories.formattedNumberString()) kcal")
                     self.activities.append(activity)
                     print("Updated Calories Data: \(self.todayCalories)")
                 }
@@ -157,33 +160,42 @@ class HomeViewModel: ObservableObject {
     }
 
     
+    func fetchTodayActiveTime() {
+        healthManager.fetchTodayActiveTimeAsActivity { result in
+            switch result {
+            case .success(let activity):
+                DispatchQueue.main.async {
+                    // Check if already present, then update
+                    if let index = self.activities.firstIndex(where: { $0.title == "Active Time" }) {
+                        self.activities[index] = activity
+                    } else {
+                        self.activities.append(activity)
+                    }
+                }
+            case .failure(let error):
+                print("Error fetching Active Time: \(error.localizedDescription)")
+            }
+        }
+    }
+
     
-    
-//    func fetchCaloriesOverTime() {
-//            healthManager.fetchCaloriesForWeek { result in
-//                switch result {
-//                case .success(let data):
-//                    DispatchQueue.main.async {
-//                        self.caloriesData = data
-//                    }
-//                case .failure(let error):
-//                    print(error.localizedDescription)
-//                }
-//            }
-//        }
-//    
-//    func fetchActiveMinutesOverTime() {
-//            healthManager.fetchActiveMinutesForWeek { result in
-//                switch result {
-//                case .success(let data):
-//                    DispatchQueue.main.async {
-//                        self.activeMinutesData = data
-//                    }
-//                case .failure(let error):
-//                    print(error.localizedDescription)
-//                }
-//            }
-//        }
+    func fetchTodayStandTime() {
+        healthManager.fetchTodayStandTimeAsActivity { result in
+            switch result {
+            case .success(let activity):
+                DispatchQueue.main.async {
+                    // Check if already present, then update
+                    if let index = self.activities.firstIndex(where: { $0.title == "Stand Time" }) {
+                        self.activities[index] = activity
+                    } else {
+                        self.activities.append(activity)
+                    }
+                }
+            case .failure(let error):
+                print("Error fetching Stand Time: \(error.localizedDescription)")
+            }
+        }
+    }
     
     
     
@@ -227,6 +239,7 @@ class HomeViewModel: ObservableObject {
             }
         }
     }
+    
     
     // MARK: Recent Workouts
     func fetchRecentWorkouts() {

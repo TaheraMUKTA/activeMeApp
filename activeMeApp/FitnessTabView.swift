@@ -36,7 +36,7 @@ struct FitnessTabView: View {
                     Image(systemName: "house")
                     Text("Home")
                 }
-            ChartsDataView()
+            ChartsView()
                 .tag("Charts")
                 .tabItem {
                     Image(systemName: "chart.bar.xaxis.ascending")
