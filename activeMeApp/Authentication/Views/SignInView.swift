@@ -6,12 +6,17 @@
 //
 
 import SwiftUI
+import FirebaseAuth
 
 struct SignInView: View {
     @State private var email = ""
     @State private var password = ""
     @State private var showLottie = false
     @State private var confirmPassword = ""
+    @State private var errorMessage: String = ""
+    @State private var showNotVerifiedAlert = false
+    @State private var showCompleteRegistration = false
+
 
     @EnvironmentObject var viewModel: AuthViewModel
 
@@ -46,6 +51,12 @@ struct SignInView: View {
                                         confirmPassword = newValue
                                     }
                             }
+                            if !errorMessage.isEmpty {
+                                Text(errorMessage)
+                                    .font(.system(size: 14))
+                                    .foregroundColor(.red)
+                                    .padding(.top, 5)
+                            }
                         
                     }
                     .padding(.horizontal, 30)
@@ -78,11 +89,31 @@ struct SignInView: View {
                         }
                         
                         Task {
-                            do {
-                                try await viewModel.signIn(withEmail: email, password: password)
-                            } catch {
-                                print("Login failed: \(error.localizedDescription)")
-                            }
+                                do {
+                                    try await viewModel.signIn(withEmail: email, password: password)
+                                    errorMessage = "" // Clear error message on successful sign-in
+                                } catch let error as NSError {
+                                    if let authError = AuthErrorCode(rawValue: error.code) {
+                                        switch authError {
+                                        case .wrongPassword:
+                                            errorMessage = "Incorrect password. Please try again."
+                                        case .invalidEmail:
+                                            errorMessage = "Invalid email format. Please check your email."
+                                        case .userNotFound:
+                                            errorMessage = "No account found with this email."
+                                        case .networkError:
+                                            errorMessage = "Network error. Please check your connection."
+                                        case .userDisabled:
+                                            errorMessage = "This account has been disabled."
+                                        default:
+                                            errorMessage = "Login failed. Please try again."
+                                        }
+                                    } else {
+                                        errorMessage = "Login failed. Please try again."
+                                    }
+                                    print("Login failed: \(error.localizedDescription)")
+                                }
+
                         }
                     }
                     .disabled(!formIsValid)
@@ -117,6 +148,24 @@ struct SignInView: View {
                     set: { _ in }))
                 {
                     FitnessTabView()
+                }
+                .onAppear {
+                    NotificationCenter.default.addObserver(forName: NSNotification.Name("EmailNotVerified"), object: nil, queue: .main) { _ in
+                        showNotVerifiedAlert = true
+                    }
+                    
+                    NotificationCenter.default.addObserver(forName: NSNotification.Name("CompleteRegistrationRequired"), object: nil, queue: .main) { _ in
+                        showCompleteRegistration = true
+                    }
+                }
+                .navigationDestination(isPresented: $showCompleteRegistration) {
+                    CompleteRegistrationView(showCompleteRegistration: $showCompleteRegistration)
+                        .environmentObject(viewModel)
+                }
+                .alert("Email Not Verified", isPresented: $showNotVerifiedAlert) {
+                    Button("OK", role: .cancel) {}
+                } message: {
+                    Text("Please verify your email before signing in. Check your inbox for the verification link.")
                 }
             }
         }

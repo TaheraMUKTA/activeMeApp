@@ -11,16 +11,11 @@ struct User: Identifiable, Codable {
     let id: String
     let email: String
     var profileName: String
-    let dob: Date
+    let dob: String
     let height: String
     let weight: String
     let gender: String
     let password: String
-        
-       
-    var formattedDOB: String {
-        DateFormatterHelper.shared.formatDate(dob)
-    }
    
 }
 
@@ -29,7 +24,7 @@ extension User {
         id: NSUUID().uuidString,
         email: "test@test.com",
         profileName: "Test User",
-        dob: Date(),
+        dob: "06/05/2003",
         height: "170",
         weight: "70",
         gender: "male",
