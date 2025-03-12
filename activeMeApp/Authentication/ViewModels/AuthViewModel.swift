@@ -65,12 +65,6 @@ class AuthViewModel: ObservableObject {
     }
 
 
-
-
-
-
-
-
     func createUser(
         withEmail email: String,
         password: String,
@@ -106,13 +100,6 @@ class AuthViewModel: ObservableObject {
             throw error
         }
     }
-
-
-
-
-
-
-
     
     
     
@@ -186,10 +173,43 @@ class AuthViewModel: ObservableObject {
     func fetchUserData() async {
         guard let uid = Auth.auth().currentUser?.uid else { return }
         
-        guard let snapshot = try? await Firestore.firestore().collection("users").document(uid).getDocument() else { return }
-        self.currentUser = try? snapshot.data(as: User.self)
+        let userRef = Firestore.firestore().collection("users").document(uid)
         
+        do {
+            let snapshot = try await userRef.getDocument()
+            
+            // ✅ Try automatic decoding first
+            if let decodedUser = try? snapshot.data(as: User.self) {
+                self.currentUser = User(
+                    id: decodedUser.id,
+                    email: decodedUser.email,
+                    profileName: decodedUser.profileName,
+                    dob: decodedUser.dob,
+                    height: decodedUser.height,
+                    weight: decodedUser.weight,
+                    gender: decodedUser.gender,
+                    password: ""  // ✅ Ensure password is never stored
+                )
+            } else {
+                // ✅ Fallback to manual mapping if decoding fails
+                if let data = snapshot.data() {
+                    self.currentUser = User(
+                        id: uid,
+                        email: data["email"] as? String ?? "",
+                        profileName: data["profileName"] as? String ?? "",
+                        dob: data["dob"] as? String ?? "",
+                        height: data["height"] as? String ?? "",
+                        weight: data["weight"] as? String ?? "",
+                        gender: data["gender"] as? String ?? "",
+                        password: ""  // ✅ Always set an empty password
+                    )
+                }
+            }
+        } catch {
+            print("DEBUG: Failed to fetch user data: \(error.localizedDescription)")
+        }
     }
+
     
     
     func updateUserName(newName: String) async {
@@ -254,10 +274,6 @@ class AuthViewModel: ObservableObject {
             throw error
         }
     }
-
-    
-    
-
     
 }
 

@@ -8,45 +8,6 @@
 import Foundation
 import HealthKit
 
-extension Date {
-    static var startOfDay: Date {
-        let calender = Calendar.current
-        return calender.startOfDay(for: Date())
-    }
-    
-    static var startOfWeek: Date {
-        let calender = Calendar.current
-        var components = calender.dateComponents([.yearForWeekOfYear, .weekOfYear], from: Date())
-        components.weekday = 2
-        return calender.date(from: components) ?? Date()
-    }
-    
-    func fetchMonthStartAndEndDate() -> (Date, Date) {
-        let calender = Calendar.current
-        let startDateComponent = calender.dateComponents([.year, .month], from: calender.startOfDay(for: self))
-        let startDate = calender.date(from: startDateComponent) ?? self
-        let endDate = calender.date(byAdding: DateComponents(month: 1, day: -1), to: startDate) ?? self
-        return (startDate, endDate)
-    }
-    
-    func formatWorkoutDate() -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MMM d"
-        return formatter.string(from: self)
-    }
-
-}
-
-extension Double {
-    func formattedNumberString() -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        formatter.maximumFractionDigits = 0
-        
-        return formatter.string(from: NSNumber(value: self)) ?? "0"
-    }
-}
-
 class HealthManager {
     
     static let shared = HealthManager()
@@ -754,8 +715,7 @@ class HealthManager {
         }
     }
 
-
-    }
+}
 
       
     // MARK: ChartsView Data
@@ -896,4 +856,25 @@ class HealthManager {
             completion(.success(YearChartDataResult(oneYear: sortedData)))
         }
     }
+}
+
+ // MARK: TopPerformers View
+extension HealthManager {
+    
+    func fetchCurrentWeekStepCount(completion: @escaping (Result<Double, Error>) -> Void) {
+        let steps = HKQuantityType(.stepCount)
+        let predicate = HKQuery.predicateForSamples(withStart: .startOfWeek, end: Date())
+        let query = HKStatisticsQuery(quantityType: steps, quantitySamplePredicate: predicate) { _, results, error in
+            guard let quantity = results?.sumQuantity(), error == nil else {
+                completion(.failure(URLError(.badURL)))
+                return
+            }
+               
+            let steps = quantity.doubleValue(for: .count())
+            completion(.success(steps))
+        }
+        
+        healthStore.execute(query)
+    }
+    
 }

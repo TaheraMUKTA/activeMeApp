@@ -98,7 +98,7 @@ struct SignUpView: View {
                         .disabled(!formIsValid)
                         .opacity(formIsValid ? 1 : 0.5)
                         
-                        Spacer().frame(height: 210)
+                        Spacer().frame(height: 280)
                         
                         NavigationLink {
                             SignInView()
@@ -163,4 +163,4 @@ extension SignUpView: AuthenticationFormProtocol {
         .environmentObject(AuthViewModel())
 }
 
-    
+

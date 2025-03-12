@@ -7,33 +7,9 @@
 
 import SwiftUI
 
-struct TopPerformersUsers: Codable, Identifiable {
-    let id: Int
-    let createdAt: String
-    let username: String
-    let count: Int
-}
-
-
-class TopPerformersViewModel: ObservableObject {
-    var mockData = [
-        TopPerformersUsers(id: 1, createdAt: "", username: "Tahera", count: 7678),
-        TopPerformersUsers(id: 2, createdAt: "", username: "Mukta", count: 7478),
-        TopPerformersUsers(id: 3, createdAt: "", username: "Tamim", count: 7378),
-        TopPerformersUsers(id: 4, createdAt: "", username: "Foysal", count: 7278),
-        TopPerformersUsers(id: 5, createdAt: "", username: "Meera", count: 7178),
-        TopPerformersUsers(id: 6, createdAt: "", username: "Mohammad", count: 7078),
-        TopPerformersUsers(id: 7, createdAt: "", username: "Tasnim", count: 6878),
-        TopPerformersUsers(id: 8, createdAt: "", username: "Motaher", count: 6678),
-        TopPerformersUsers(id: 9, createdAt: "", username: "Hossain", count: 6378),
-        TopPerformersUsers(id: 10, createdAt: "", username: "Tanny", count: 6178)
-    ]
-    
-}
-
-
 struct TopPerformersView: View {
-    @StateObject var viewModel = TopPerformersViewModel()
+    @StateObject var performersViewModel = TopPerformersViewModel()
+    @AppStorage("acceptedTerms") var acceptedTerms: Bool = false
     @Binding var showPage: Bool
     
     var body: some View {
@@ -53,17 +29,52 @@ struct TopPerformersView: View {
                     .font(.title3)
             }
             .padding()
-            .foregroundColor(.green)
+            .foregroundColor(Color(red: 15/255, green: 174/255, blue: 1/255))
             .padding(.horizontal, 20)
             
             ScrollView {
-                ForEach(viewModel.mockData) { user in
+                LazyVStack {
+                    ForEach(Array(performersViewModel.performersResult.topten.prefix(10).enumerated()), id: \.element.id) { (index, users) in
+                        HStack {
+                            Text("\(index + 1).")
+                                .font(.headline)
+                                .fontWeight(.bold)
+                            
+                            Text(users.profilename)
+                                .font(.headline)
+                            
+                            if index == 0 {
+                                Text("👑")
+                            } else if index == 1 {
+                                Text("🥈")
+                            } else if index == 2 {
+                            Text("🥉")
+                            }
+
+                            Spacer()
+                            Text("\(users.count.formattedNumberString())")
+                                .font(.headline)
+                                .foregroundColor(.gray)
+                        }
+                        .padding()
+                        .background(Color.gray.opacity(0.1))
+                        .cornerRadius(10)
+                        .padding(.horizontal, 20)
+                    }
+                }
+                
+                
+                if let user = performersViewModel.performersResult.user {
+                    Image(systemName: "ellipsis")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 46, height: 46)
+                        .foregroundColor(Color(red: 15/255, green: 174/255, blue: 1/255))
                     HStack {
-                        Text("\(user.id). ")
-                        Text("\(user.username)")
+                        Text("\(user.profilename.isEmpty ? "Unknown" : user.profilename)")
                             .font(.headline)
                         Spacer()
-                        Text("\(user.count)")
+                        Text("\(user.count.formattedNumberString())")
                             .font(.headline)
                             .foregroundColor(.gray)
                     }
@@ -72,13 +83,30 @@ struct TopPerformersView: View {
                     .cornerRadius(10)
                     .padding(.horizontal, 20)
                 }
+                
             }
         }
         .frame(maxHeight: .infinity, alignment: .top)
-        .fullScreenCover(isPresented: $showPage) {
-            BoardPageView()
+        .onAppear {
+            Task {
+                try? await performersViewModel.setTopPerformersData()
+            }
         }
-        
+        if !acceptedTerms {
+            Color.white.opacity(0.95)
+                .ignoresSafeArea()
+
+            BoardPageView(showPage: $showPage)
+                .transition(.opacity)
+        }
+    }
+}
+
+extension Int {
+    func formattedNumberString() -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        return formatter.string(from: NSNumber(value: self)) ?? "\(self)"
     }
 }
 

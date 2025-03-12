@@ -169,7 +169,30 @@ struct ProfileView: View {
                             }
                         }
                         
-                        // Contact Us Button
+                        // User Details
+                        VStack {
+                            NavigationLink(destination: {
+                                if let user = viewModel.currentUser {
+                                    UserDetailsView(user: user)
+                                } else {
+                                    Text("No user data found")
+                                }
+                            }) {
+                                HStack {
+                                    Image(systemName: "person.text.rectangle")
+                                        .foregroundColor(Color(red: 15/255, green: 174/255, blue: 1/255))
+                                    Text("User Details")
+                                        .foregroundColor(.primary)
+                                }
+                                .padding()
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .background(RoundedRectangle(cornerRadius: 10)
+                                    .fill(.gray.opacity(0.1)))
+                                .padding(.horizontal, 5)
+                            }
+                        }
+
+                        
                         // Contact Us Button
                         ProfileButtonView(image: "envelope", title: "Contact Us") {
                             if MFMailComposeViewController.canSendMail() {

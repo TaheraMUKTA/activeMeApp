@@ -51,3 +51,4 @@ func getLast7Days() -> [String] {
     
     return days.reversed() // Reverse to have today's date at the end
 }
+

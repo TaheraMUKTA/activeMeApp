@@ -30,9 +30,9 @@ struct BarChartView: View {
                 }
             }
             .chartXAxis {
-                        AxisMarks(values: .stride(by: 6)) { value in
-                            AxisValueLabel(formatHour(value: value))
-                        }
+                AxisMarks(values: .stride(by: 6)) { value in
+                    AxisValueLabel(formatHour(value: value))
+                }
         }
         .frame(height: 100)
         .background(Color(.systemBackground))

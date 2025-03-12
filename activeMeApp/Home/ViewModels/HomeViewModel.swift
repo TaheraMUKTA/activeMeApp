@@ -19,20 +19,6 @@ class HomeViewModel: ObservableObject {
     @Published var activities = [Activity]()
     @Published var workouts = [Workout]()
     
-    var mockActivities = [
-        Activity(title: "Today Steps", subtitle: "Goal 12,000", image: "figure.walk", tintColor: .green, amount: "5,850"),
-        Activity(title: "Today", subtitle: "Goal 12,000", image: "figure.walk", tintColor: .red, amount: "9,850"),
-        Activity(title: "Today Steps", subtitle: "Goal 1,000", image: "figure.walk", tintColor: .blue, amount: "850"),
-        Activity(title: "Today Steps", subtitle: "Goal 80,000", image: "figure.run", tintColor: .purple, amount: "65,850")
-    ]
-    
-    var mockWorkouts = [
-         Workout(id: 0, tital: "Running", image: "figure.run", tintColor: .cyan, duration: "35 mins", date: "Jan 8", calories: "523 kcal"),
-         Workout(id: 1, tital: "Strength Training", image: "figure.strengthtraining.traditional", tintColor: .red, duration: "55 mins", date: "Jan 10", calories: "963 kcal"),
-         Workout(id: 2, tital: "Hiking", image: "figure.hiking", tintColor: .purple, duration: "45 mins", date: "Jan 12", calories: "823 kcal"),
-         Workout(id: 3, tital: "Swimming", image: "figure.pool.swim", tintColor: .blue, duration: "5 mins", date: "Jan 15", calories: "373 kcal")
-    ]
-    
      init() {
         Task {
             do {
@@ -86,6 +72,17 @@ class HomeViewModel: ObservableObject {
                     print("Updated Calories Data: \(self.todayCalories)")
                 }
             case .failure(let failure):
+                DispatchQueue.main.async {
+                    
+                    let activity = Activity(
+                        title: "Calories Burned",
+                        subtitle: "Today",
+                        image: "flame",
+                        tintColor: .red,
+                        amount: "0 kcal")
+                    self.activities.append(activity)
+                    print("Updated Calories Data: \(self.todayCalories)")
+                }
                 print(failure.localizedDescription)
             }
             
@@ -196,7 +193,7 @@ class HomeViewModel: ObservableObject {
             }
         }
     }
-    
+
     
     
     func fetchTodayStandHours() {
@@ -222,6 +219,14 @@ class HomeViewModel: ObservableObject {
                     self.activities.append(activity)
                 }
             case .failure(let failure):
+                DispatchQueue.main.async {
+                    self.activities.append(Activity(
+                        title: "Today Steps",
+                        subtitle: "Goal: 800",
+                        image: "figure.walk",
+                        tintColor: .green,
+                        amount: "0"))
+                }
                 print(failure.localizedDescription)
             }
         }
