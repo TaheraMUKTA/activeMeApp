@@ -9,6 +9,7 @@ import SwiftUI
 import MessageUI
 import RevenueCat
 
+
 struct ProfileView: View {
     // Persistent storage for user details
     @AppStorage("profileName") var profileName: String?
