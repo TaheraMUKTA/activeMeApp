@@ -15,21 +15,23 @@ struct ActivityCardView: View {
                 .cornerRadius(15)
             VStack {
                 HStack(alignment: .top) {
+                    // Title and subtitle on left
                     VStack(alignment: .leading, spacing: 8) {
-                        Text(activity.title)
+                        Text(activity.title)    // e.g. "Today Steps"
                             .font(.headline)
                             .lineLimit(1)
                             .minimumScaleFactor(0.5)
-                        Text(activity.subtitle)
+                        Text(activity.subtitle)    // e.g. "Goal: 12,000"
                             .font(.caption)
                     }
                     Spacer()
                     
+                    // Icon on the right side
                     Image(systemName: activity.image)
                         .foregroundColor(activity.tintColor)
-                        
-                    
                 }
+                
+                // Main amount shown in bold (e.g. step count)
                 Text(activity.amount)
                     .font(.title)
                     .fontWeight(.bold)

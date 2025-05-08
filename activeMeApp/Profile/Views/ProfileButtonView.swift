@@ -8,11 +8,16 @@
 import SwiftUI
 
 struct ProfileButtonView: View {
-    @State var image: String
-    @State var title: String
+    @State var image: String     // SF Symbol name
+    @State var title: String     // Button title text
     var action: (() -> Void)
     
     var body: some View {
+        // Dynamically adapts text color based on light/dark mode
+        let adaptiveColor = Color(UIColor { traitCollection in
+            return traitCollection.userInterfaceStyle == .dark ? .white : .black
+        })
+        
         VStack {
             Button {
                 action()
@@ -21,7 +26,7 @@ struct ProfileButtonView: View {
                     Image(systemName: image)
                         .foregroundColor(Color(red: 15/255, green: 174/255, blue: 1/255))
                     Text(title)
-                        .foregroundColor(.black)
+                        .foregroundColor(adaptiveColor)
                     
                 }
                 

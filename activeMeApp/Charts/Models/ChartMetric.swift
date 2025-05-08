@@ -7,6 +7,7 @@
 
 import Foundation
 
+// showes the different health metrics shown in charts
 enum ChartMetric: String, CaseIterable {
     case steps = "Steps"
     case calories = "Calories"

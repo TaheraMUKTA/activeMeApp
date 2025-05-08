@@ -9,12 +9,14 @@ import Foundation
 import HealthKit
 import SwiftUI
 
+// Extends `HKWorkoutActivityType` to provide human-readable labels, system icons, and theme colors
 extension HKWorkoutActivityType {
 
     /*
      Simple mapping of available workout types to a human readable name.
      */
     var name: String {
+        // Common workout types
         switch self {
         case .americanFootball:             return "American Football"
         case .archery:                      return "Archery"
@@ -29,6 +31,8 @@ extension HKWorkoutActivityType {
         case .curling:                      return "Curling"
         case .cycling:                      return "Cycling"
         case .dance:                        return "Dance"
+        case .socialDance:                  return "Dance"
+        case .cardioDance:                  return "Dance"
         case .danceInspiredTraining:        return "Dance Inspired Training"
         case .elliptical:                   return "Elliptical"
         case .equestrianSports:             return "Equestrian Sports"
@@ -103,100 +107,108 @@ extension HKWorkoutActivityType {
         }
     }
     
-    var image: String {
-            switch self {
-            case .americanFootball: return "football.fill"
-            case .archery: return "target"
-            case .australianFootball: return "sportscourt"
-            case .badminton: return "figure.badminton"
-            case .baseball: return "baseball.fill"
-            case .basketball: return "basketball.fill"
-            case .bowling: return "figure.bowling"
-            case .boxing: return "figure.boxing"
-            case .climbing: return "figure.stairs"
-            case .crossTraining: return "figure.strengthtraining.traditional"
-            case .cycling: return "figure.outdoor.cycle"
-            case .dance: return "figure.dance"
-            case .elliptical: return "figure.elliptical"
-            case .fencing: return "figure.fencing"
-            case .fishing: return "fish"
-            case .functionalStrengthTraining: return "figure.strengthtraining.functional"
-            case .golf: return "figure.golf"
-            case .gymnastics: return "figure.gymnastics"
-            case .hiking: return "figure.hiking"
-            case .hockey: return "hockey.puck"
-            case .martialArts: return "figure.martial.arts"
-            case .rowing: return "figure.rowing"
-            case .rugby: return "sportscourt"
-            case .running: return "figure.run"
-            case .skatingSports: return "figure.skating"
-            case .snowSports: return "snowflake"
-            case .soccer: return "soccerball"
-            case .softball: return "figure.softball"
-            case .swimming: return "figure.pool.swim"
-            case .tableTennis: return "figure.tabletennis"
-            case .tennis: return "figure.tennis"
-            case .trackAndField: return "figure.track.and.field"
-            case .traditionalStrengthTraining: return "dumbbell"
-            case .volleyball: return "figure.volleyball"
-            case .walking: return "figure.walk"
-            case .waterSports: return "figure.surfing"
-            case .yoga: return "figure.yoga"
-            case .highIntensityIntervalTraining: return "flame.fill"
-            case .kickboxing: return "figure.kickboxing"
-            case .pilates: return "figure.pilates"
-            case .taiChi: return "figure.taichi"
-            case .mixedCardio: return "heart.fill"
-            default: return "questionmark.circle"
-            }
-        }
+    // MARK: - SF Symbol Mapping
     
-    var color: Color {
-            switch self {
-            case .americanFootball: return .brown
-            case .archery: return .blue
-            case .australianFootball: return .green
-            case .badminton: return .purple
-            case .baseball: return .red
-            case .basketball: return .orange
-            case .bowling: return .gray
-            case .boxing: return .black
-            case .climbing: return .yellow
-            case .crossTraining: return .pink
-            case .cycling: return .cyan
-            case .dance: return .mint
-            case .elliptical: return .teal
-            case .fencing: return .indigo
-            case .fishing: return .blue
-            case .functionalStrengthTraining: return .red
-            case .golf: return .green
-            case .gymnastics: return .purple
-            case .hiking: return .brown
-            case .hockey: return .gray
-            case .martialArts: return .black
-            case .rowing: return .blue
-            case .rugby: return .red
-            case .running: return .orange
-            case .skatingSports: return .cyan
-            case .snowSports: return .white
-            case .soccer: return .green
-            case .softball: return .yellow
-            case .swimming: return .blue
-            case .tableTennis: return .red
-            case .tennis: return .green
-            case .trackAndField: return .orange
-            case .traditionalStrengthTraining: return .gray
-            case .volleyball: return .yellow
-            case .walking: return .purple
-            case .waterSports: return .cyan
-            case .yoga: return .mint
-            case .highIntensityIntervalTraining: return .pink
-            case .kickboxing: return .red
-            case .pilates: return .purple
-            case .taiChi: return .teal
-            case .mixedCardio: return .red
-            default: return .green
-            }
+    // Returns a suitable SF Symbol string for the activity type.
+    var image: String {
+        switch self {
+        case .americanFootball: return "football.fill"
+        case .archery: return "target"
+        case .australianFootball: return "sportscourt"
+        case .badminton: return "figure.badminton"
+        case .baseball: return "baseball.fill"
+        case .basketball: return "basketball.fill"
+        case .bowling: return "figure.bowling"
+        case .boxing: return "figure.boxing"
+        case .climbing: return "figure.stairs"
+        case .crossTraining: return "figure.strengthtraining.traditional"
+        case .cycling: return "figure.outdoor.cycle"
+        case .dance: return "figure.dance"
+        case .socialDance: return "figure.dance"
+        case .cardioDance: return "figure.dance"
+        case .elliptical: return "figure.elliptical"
+        case .fencing: return "figure.fencing"
+        case .fishing: return "fish"
+        case .functionalStrengthTraining: return "figure.strengthtraining.functional"
+        case .golf: return "figure.golf"
+        case .gymnastics: return "figure.gymnastics"
+        case .hiking: return "figure.hiking"
+        case .hockey: return "hockey.puck"
+        case .martialArts: return "figure.martial.arts"
+        case .rowing: return "figure.rowing"
+        case .rugby: return "sportscourt"
+        case .running: return "figure.run"
+        case .stairs: return "figure.stairs"
+        case .snowSports: return "snowflake"
+        case .soccer: return "soccerball"
+        case .softball: return "figure.softball"
+        case .swimming: return "figure.pool.swim"
+        case .tableTennis: return "figure.tabletennis"
+        case .tennis: return "figure.tennis"
+        case .trackAndField: return "figure.track.and.field"
+        case .traditionalStrengthTraining: return "dumbbell"
+        case .volleyball: return "figure.volleyball"
+        case .walking: return "figure.walk"
+        case .waterSports: return "figure.surfing"
+        case .yoga: return "figure.yoga"
+        case .highIntensityIntervalTraining: return "flame.fill"
+        case .kickboxing: return "figure.kickboxing"
+        case .pilates: return "figure.pilates"
+        case .taiChi: return "figure.taichi"
+        case .mixedCardio: return "heart.fill"
+        default: return "questionmark.circle"
         }
-
+    }
+    // MARK: - Color Mapping
+    
+    // Provides a default color for each workout type.
+    var color: Color {
+        switch self {
+        case .americanFootball: return .brown
+        case .archery: return .blue
+        case .australianFootball: return .green
+        case .badminton: return .purple
+        case .baseball: return .red
+        case .basketball: return .orange
+        case .bowling: return .gray
+        case .boxing: return .black
+        case .climbing: return .yellow
+        case .crossTraining: return .pink
+        case .cycling: return .cyan
+        case .dance: return .pink
+        case .socialDance: return .pink
+        case .cardioDance: return .pink
+        case .elliptical: return .teal
+        case .fencing: return .indigo
+        case .fishing: return .blue
+        case .functionalStrengthTraining: return .red
+        case .golf: return .green
+        case .gymnastics: return .purple
+        case .hiking: return .brown
+        case .hockey: return .gray
+        case .martialArts: return .black
+        case .rowing: return .blue
+        case .rugby: return .red
+        case .running: return .orange
+        case .stairs: return .blue
+        case .snowSports: return .white
+        case .soccer: return .green
+        case .softball: return .yellow
+        case .swimming: return .blue
+        case .tableTennis: return .red
+        case .tennis: return .green
+        case .trackAndField: return .orange
+        case .traditionalStrengthTraining: return .gray
+        case .volleyball: return .yellow
+        case .walking: return .purple
+        case .waterSports: return .cyan
+        case .yoga: return .mint
+        case .highIntensityIntervalTraining: return .pink
+        case .kickboxing: return .red
+        case .pilates: return .purple
+        case .taiChi: return .teal
+        case .mixedCardio: return .red
+        default: return .green
+        }
+    }
 }

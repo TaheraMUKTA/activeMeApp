@@ -17,6 +17,10 @@ struct ForgotPasswordView: View {
     @EnvironmentObject var viewModel: AuthViewModel
     
     var body: some View {
+        // Adaptive color for dark/light mode
+        let adaptiveColor = Color(UIColor { traitCollection in
+            return traitCollection.userInterfaceStyle == .dark ? .white : .black
+        })
         NavigationStack {
             
             VStack {
@@ -43,18 +47,20 @@ struct ForgotPasswordView: View {
                 
                 Spacer().frame(height: 30)
                 
+                // Email input field
                 VStack(alignment: .leading, spacing: 10) {
                     InputView(text: $email, title: "Email Address", placeholder: "name@example.com")
                         .keyboardType(.emailAddress)
                         .onChange(of: email) { _, newValue in
-                            email = newValue.lowercased()
+                            email = newValue.lowercased()        // Always store lowercase email
                         }
                 }
                 .padding(.horizontal, 30)
                 .padding(.bottom, 20)
                 
-                
+                // Continue button to send reset email
                 ButtonView(title: "CONTINUE", image: "arrow.right") {
+                    // Check if email field is valid
                     guard !email.isEmpty else {
                         alertMessage = "Please enter your email address."
                         showAlert = true
@@ -67,6 +73,7 @@ struct ForgotPasswordView: View {
                         return
                     }
                     
+                    // Call reset function from ViewModel
                     Task {
                         do {
                             try await viewModel.resetPassword(forEmail: email)
@@ -78,6 +85,7 @@ struct ForgotPasswordView: View {
                             showAlert = true
                         }
                     }
+                    
                 }
                 .disabled(!formIsValid)
                 .opacity(formIsValid ? 1 : 0.5)
@@ -85,13 +93,14 @@ struct ForgotPasswordView: View {
                 
                 Spacer()
                 
+                // Go back to Sign In
                 Button {
                     dismiss()
                 } label: {
                     HStack(spacing: 3) {
                         Text("Remmber your password?")
                             .font(.system(size: 14))
-                            .foregroundColor(.black)
+                            .foregroundColor(adaptiveColor)
                         
                         Text("Sign In")
                             .font(.system(size: 14, weight: .bold))
@@ -107,6 +116,7 @@ struct ForgotPasswordView: View {
                     showLottie = true
                 }
             }
+            // Show alert for success or error messages
             .alert(isPresented: $showAlert) {
                 Alert(title: Text("Password Reset"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
             }
@@ -114,10 +124,12 @@ struct ForgotPasswordView: View {
     }
 }
 
+// form validation
 extension ForgotPasswordView: AuthenticationFormProtocol {
     var formIsValid: Bool {
         return !email.isEmpty
         && email.contains("@")
+        && email.contains(".")
         
     }
 }

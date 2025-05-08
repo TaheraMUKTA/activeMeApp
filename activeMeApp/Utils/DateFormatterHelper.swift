@@ -17,10 +17,12 @@ struct DateFormatterHelper {
         formatter.dateFormat = "dd MMM yyyy"  // Customize format here
     }
     
+    // Converts a `Date` object to a formatted string.
     func formatDate(_ date: Date) -> String {
         return formatter.string(from: date)
     }
     
+    // Parses a date string into a `Date` object, if valid.
     func parseDate(from string: String) -> Date? {
         return formatter.date(from: string)
     }

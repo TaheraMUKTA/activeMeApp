@@ -11,6 +11,10 @@ struct PasswordResetView: View {
     @State private var showLottie = false
     
     var body: some View {
+        // Adaptive color for dark/light mode
+        let adaptiveColor = Color(UIColor { traitCollection in
+            return traitCollection.userInterfaceStyle == .dark ? .white : .black
+        })
         VStack {
             Spacer().frame(height: 30)
 
@@ -22,46 +26,47 @@ struct PasswordResetView: View {
             }
 
             Spacer().frame(height: 70)
+            // Checkmark icon for success
+            Image(systemName: "checkmark.circle.fill")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 50, height: 50)
+                .foregroundColor(Color(red: 15/255, green: 174/255, blue: 1/255))
+                .padding()
 
-                    Image(systemName: "checkmark.circle.fill")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 50, height: 50)
-                        .foregroundColor(Color(red: 15/255, green: 174/255, blue: 1/255))
-                        .padding()
+            Spacer().frame(height: 20)
 
-                    Spacer().frame(height: 20)
-
-                    Text("Password Reset")
-                        .font(.title)
-                        .bold()
+            Text("Password Reset")
+                .font(.title)
+                .bold()
                         
 
-                    Spacer().frame(height: 60)
+            Spacer().frame(height: 60)
 
-                    Text("Your password has been successfully reset.")
-                        .font(.headline)
-                        .foregroundColor(.black.opacity(0.7))
+            Text("Your password has been successfully reset.")
+                .font(.headline)
+                .foregroundColor(adaptiveColor.opacity(0.7))
 
-                    Spacer().frame(height: 5)
+            Spacer().frame(height: 5)
 
-                    Text("Click below to login")
-                        .font(.body)
-                        .foregroundColor(.black.opacity(0.7))
+            Text("Click below to login")
+                .font(.body)
+                .foregroundColor(adaptiveColor.opacity(0.7))
 
-                    Spacer().frame(height: 70)
+            Spacer().frame(height: 70)
 
-                    ButtonView(title: "BACK TO SIGN IN", image: "arrow.right") {
-                        print("Back to sign in...")
-                    }
+            // Go back to Sign In
+            ButtonView(title: "BACK TO SIGN IN", image: "arrow.right") {
+                print("Back to sign in...")
+            }
 
-                    Spacer()
-                }
-                .onAppear {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                        showLottie = true
-                    }
-                }
+            Spacer()
+        }
+        .onAppear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                showLottie = true
+            }
+        }
     }
 }
 

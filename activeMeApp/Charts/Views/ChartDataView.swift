@@ -12,8 +12,14 @@ struct ChartDataView: View {
     @State var total: Int
     
     var body: some View {
+        // Adapts text color based on system theme (dark/light mode)
+        let adaptiveColor = Color(UIColor { traitCollection in
+            return traitCollection.userInterfaceStyle == .dark ? .white : .black
+        })
+        
         HStack {
             Spacer()
+            // Average Box
             VStack(spacing: 15) {
                 Text("Average")
                     .font(.title2)
@@ -23,12 +29,12 @@ struct ChartDataView: View {
             .padding()
             .frame(width: 130)
             .background(Color.gray.opacity(0.1))
-            .foregroundColor(.black)
+            .foregroundColor(adaptiveColor)
             .cornerRadius(10)
-            
             
             Spacer()
             
+            // Total Box
             VStack(spacing: 15) {
                 Text("Total")
                     .font(.title2)
@@ -38,7 +44,7 @@ struct ChartDataView: View {
             .padding()
             .frame(width: 130)
             .background(Color.gray.opacity(0.1))
-            .foregroundColor(.black)
+            .foregroundColor(adaptiveColor)
             .cornerRadius(10)
             
             Spacer()

@@ -7,6 +7,7 @@
 
 import Foundation
 
+// Stores steps data for a specific date
 struct DailyStepModel: Identifiable {
     let id = UUID()
     let date: Date

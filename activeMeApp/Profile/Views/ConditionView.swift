@@ -87,6 +87,7 @@ struct ConditionView: View {
                     """)
                     .font(.body)
                     .padding(.bottom, 10)
+                // Contact Button (opens email)
                 Button {
                     if let url = URL(string: "mailto:taheraaktermukta17@gmail.com") {
                         if UIApplication.shared.canOpenURL(url) {
@@ -98,8 +99,6 @@ struct ConditionView: View {
                         .foregroundColor(Color(red: 15/255, green: 174/255, blue: 1/255))
                         .underline()
                 }
-
-
                 
                 Spacer()
             }

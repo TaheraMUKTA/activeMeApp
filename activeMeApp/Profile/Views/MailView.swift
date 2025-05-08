@@ -8,6 +8,7 @@
 import SwiftUI
 import MessageUI
 
+// A SwiftUI wrapper to present the native iOS Mail Composer
 struct MailView: UIViewControllerRepresentable {
     @Environment(\.dismiss) var dismiss
     
@@ -15,7 +16,10 @@ struct MailView: UIViewControllerRepresentable {
     var subject: String
     var body: String
     var senderEmail: String // Add sender's email
+    var onMailSent: (() -> Void)?  // Callback when email is sent
+    var onMailFailed: (() -> Void)? // Callback when email fails
     
+    // Coordinator to handle delegate methods
     class Coordinator: NSObject, MFMailComposeViewControllerDelegate {
         var parent: MailView
         
@@ -23,7 +27,16 @@ struct MailView: UIViewControllerRepresentable {
             self.parent = parent
         }
         
+        // Handle result when user finishes mail composer
         func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+            switch result {
+            case .sent:
+                parent.onMailSent?()  // Notify ProfileView that the email was sent
+            case .failed:
+                parent.onMailFailed?() // Notify ProfileView that sending failed
+            default:
+                break
+            }
             controller.dismiss(animated: true)
         }
     }
@@ -32,6 +45,7 @@ struct MailView: UIViewControllerRepresentable {
         return Coordinator(parent: self)
     }
     
+    // Create the Mail Composer View
     func makeUIViewController(context: Context) -> MFMailComposeViewController {
         let vc = MFMailComposeViewController()
         vc.mailComposeDelegate = context.coordinator

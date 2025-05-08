@@ -11,6 +11,7 @@ struct PrivacyView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .center) {
+                // Title
                 Text("Our Privacy Policy")
                     .font(.title)
                     .foregroundColor(Color(red: 15/255, green: 174/255, blue: 1/255))
@@ -20,7 +21,7 @@ struct PrivacyView: View {
             }
             
             VStack(alignment: .leading, spacing: 15) {
-                    
+                // Intro and Overview
                 Text("""
                         Please take a moment to read our Privacy Policy to understand how we handle your personal information. As we enhance our services, this policy may be updated, so we encourage you to review it periodically.
 
@@ -28,49 +29,52 @@ struct PrivacyView: View {
                         """)
                         .font(.body)
                         .padding(.bottom, 10)
+                
+                // Information We Collect
+                Text("Information Collection:")
+                    .font(.headline)
+                    .foregroundColor(Color(red: 15/255, green: 174/255, blue: 1/255))
+                    .fontWeight(.bold)
                         
-                    Text("Information Collection:")
-                        .font(.headline)
-                        .foregroundColor(Color(red: 15/255, green: 174/255, blue: 1/255))
-                        .fontWeight(.bold)
-                        
-                    Text("""
+                Text("""
                         We may collect personal information such as your name, email, and health-related data (e.g., steps, workouts, activities).
                         """)
                         .font(.body)
                         .padding(.bottom, 10)
+                       
+                    // Usage of Information
+                Text("How We Use Your Information:")
+                    .font(.headline)
+                    .foregroundColor(Color(red: 15/255, green: 174/255, blue: 1/255))
+                    .fontWeight(.bold)
                         
-                    Text("How We Use Your Information:")
-                        .font(.headline)
-                        .foregroundColor(Color(red: 15/255, green: 174/255, blue: 1/255))
-                        .fontWeight(.bold)
+                Text("""
+                    • To provide and improve app features.
+                    • To track your health and fitness progress.
+                    """)
+                    .font(.body)
+                    .padding(.bottom, 10)
                         
-                    Text("""
-                        • To provide and improve app features.
-                        • To track your health and fitness progress.
-                        """)
-                        .font(.body)
-                        .padding(.bottom, 10)
+                // Security and Sharing
+                Text("Data Security & Sharing:")
+                    .font(.headline)
+                    .foregroundColor(Color(red: 15/255, green: 174/255, blue: 1/255))
+                    .fontWeight(.bold)
                         
-                    Text("Data Security & Sharing:")
-                        .font(.headline)
-                        .foregroundColor(Color(red: 15/255, green: 174/255, blue: 1/255))
-                        .fontWeight(.bold)
+                Text("""
+                    • Your data is encrypted and stored securely.
+                    • We do not sell your personal information.
+                    """)
+                    .font(.body)
+                    .padding(.bottom, 10)
                         
-                    Text("""
-                        • Your data is encrypted and stored securely.
-                        • We do not sell your personal information.
-                        """)
-                        .font(.body)
-                        .padding(.bottom, 10)
-                        
-                    Spacer()
-                }
-                .padding(20)
-                .lineSpacing(10)
+                Spacer()
             }
-            .navigationBarTitleDisplayMode(.inline)
+            .padding(20)
+            .lineSpacing(10)
         }
+        .navigationBarTitleDisplayMode(.inline)
+    }
 }
 
 #Preview {

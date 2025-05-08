@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// A reusable button component with title and system image
 struct ButtonView: View {
     var title: String
     var image: String
@@ -19,7 +20,7 @@ struct ButtonView: View {
                     .font(.system(size: 18, weight: .bold))
                     .foregroundColor(.white)
                         
-                Image(systemName: image)
+                Image(systemName: image)  // SF Symbol icon
                     .foregroundColor(.white)
             }
             .frame(maxWidth: .infinity)

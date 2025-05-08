@@ -8,17 +8,20 @@
 import SwiftUI
 
 struct InputView: View {
+    // Binds user input
     @Binding var text: String
     let title: String
     let placeholder: String
-    var isSecureTextEntry = false
+    var isSecureTextEntry = false     // Toggle secure entry (for passwords)
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
+            // Field label
             Text(title)
                 .font(.system(size: 16, weight: .bold))
                 .foregroundColor(Color(.darkGray))
             
+            // Display secure or normal text field
             if isSecureTextEntry {
                 SecureField(placeholder, text: $text)
                     .font(.system(size: 16))

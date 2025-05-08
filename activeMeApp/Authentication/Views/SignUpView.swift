@@ -11,136 +11,58 @@ struct SignUpView: View {
     
     @State private var showLottie = false
     @State private var email = ""
-    @State private var profileName = ""
-    @State private var selectedDate = Date()
-    @State private var dobPlaceholder = "Enter your Date of Birth"
-    @State private var height = ""
-    @State private var weight = ""
-    @State private var genderPlaceholder = "Enter your Gender"
     @State private var password = ""
     @State private var confirmPassword = ""
-    @State private var isDatePickerVisible = false
-    @State private var isGenderPickerVisible = false
-    @State private var isChecked = false
+    @State private var showVerificationAlert = false
+    @State private var showCompleteRegistration = false
+    
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var viewModel: AuthViewModel
     
-    let genders = ["Male", "Female", "Other"]
     
     var body: some View {
-        ScrollView {
+        // Adaptive color for dark/light mode
+        let adaptiveColor = Color(UIColor { traitCollection in
+            return traitCollection.userInterfaceStyle == .dark ? .white : .black
+        })
+        NavigationStack {
             VStack {
+                Spacer().frame(height: 70)
+                
+                if showLottie {
+                    LottieView(animationName: "dumbbell", width: 150, height: 150)
+                        .frame(width: 170, height: 120)
+                        .padding(.bottom, -20)
+                        .padding(.top, -40)
+                    
+                }
                 Spacer().frame(height: 30)
-
-                    if showLottie {
-                        LottieView(animationName: "dumbbell", width: 150, height: 150)
-                            .frame(width: 170, height: 120)
-                            .padding(.bottom, -20)
-                            .padding(.top, -40)
-
-                    }
+                
+                VStack {
                     Spacer().frame(height: 30)
-
+                    
                     VStack(alignment: .leading, spacing: 12) {
+                        // Email
                         InputView(text: $email, title: "Email Address", placeholder: "name@example.com")
                             .keyboardType(.emailAddress)
                             .onChange(of: email) { _, newValue in
                                 email = newValue.lowercased()
                             }
-                        InputView(text: $profileName, title: "Full Name", placeholder: "Enter your full name")
-                            .autocapitalization(.words)
-                            .onChange(of: profileName) { _, newValue in
-                                profileName = newValue.capitalized
-                            }
                         
-                        VStack(alignment: .leading, spacing: 5) {
-                            Text("DOB")
-                                .font(.system(size: 16, weight: .bold))
-                                .foregroundColor(Color(.darkGray))
-                                        
-                            HStack {
-                                TextField(dobPlaceholder, text: .constant(""))
-                                    .disabled(true)
-                                    .font(.system(size: 16))
-                                    .foregroundColor(.gray.opacity(0.5))
-
-                                Image(systemName: "calendar")
-                                    .foregroundColor(.green)
-                                    .onTapGesture {
-                                        isDatePickerVisible.toggle()
-                                    }
-                                }
-                            
-                                Divider()
-                            }
-                            .padding(.bottom, 10)
-                            .sheet(isPresented: $isDatePickerVisible) {
-                            
-                        VStack {
-                            DatePicker("Select your Date of Birth", selection: $selectedDate, displayedComponents: .date)
-                                .datePickerStyle(GraphicalDatePickerStyle())
-                                .labelsHidden()
-                                .onChange(of: selectedDate) { _, newValue in
-                                    dobPlaceholder = DateFormatterHelper.shared.formatDate(newValue)
-                                        isDatePickerVisible = false
-                                    }
-                            }
-                        }
-                        
-                        InputView(text: $height, title: "Height (cm)", placeholder: "Enter your Height in cm")
-                            .keyboardType(.numberPad)
-                            .onChange(of: height) { _, newValue in
-                                height = newValue.filter { "0123456789".contains($0) }
-                            }
-                        
-                        InputView(text: $weight, title: "Weight (kg)", placeholder: "Enter your Weight in kg")
-                            .keyboardType(.numberPad)
-                            .onChange(of: weight) { _, newValue in
-                                weight = newValue.filter { "0123456789".contains($0) }
-                            }
-                        
-                        VStack(alignment: .leading, spacing: 5) {
-                            Text("Gender")
-                                .font(.system(size: 16, weight: .bold))
-                                .foregroundColor(Color(.darkGray))
-
-                            HStack {
-                                TextField(genderPlaceholder, text: .constant(""))
-                                    .disabled(true)
-                                    .font(.system(size: 16))
-                                    .foregroundColor(.gray.opacity(0.5))
-
-                                Image(systemName: "chevron.down")
-                                    .foregroundColor(.gray)
-                                    .onTapGesture {
-                                        isGenderPickerVisible.toggle()
-                                    }
-                            }
-                            
-                            Divider()
-                        }
-                        .padding(.bottom, 10)
-                        .actionSheet(isPresented: $isGenderPickerVisible) {
-                            ActionSheet(
-                                title: Text("Select Gender"),
-                                buttons: genders.map { gender in
-                                    .default(Text(gender)) {
-                                        genderPlaceholder = gender
-                                }
-                                } + [.cancel()]
-                            )
-                        }
-                        
+                        // Password
                         InputView(text: $password, title: "Password", placeholder: "Enter your password", isSecureTextEntry: true)
                         
+                        // Confirm Password
                         ZStack(alignment: .trailing) {
                             InputView(text: $confirmPassword, title: "Confirm Password", placeholder: "Confirm your password", isSecureTextEntry: true)
+                            // Show check or X mark based on match
                             if !password.isEmpty && !confirmPassword.isEmpty {
                                 if password == confirmPassword {
                                     Image(systemName: "checkmark.circle.fill")
                                         .imageScale(.large)
                                         .fontWeight(.bold)
-                                        .foregroundStyle((Color(red: 15/255, green: 174/255, blue: 1/255))).padding(.leading, 5)
+                                        .foregroundStyle(Color.green)
+                                        .padding(.leading, 5)
                                 } else {
                                     Image(systemName: "xmark.circle.fill")
                                         .imageScale(.large)
@@ -149,75 +71,96 @@ struct SignUpView: View {
                                 }
                             }
                         }
-                        
-                        HStack {
-                            Button(action: {
-                                isChecked.toggle()
-                            }) {
-                                Image(systemName: isChecked ? "checkmark.square.fill" : "square")
-                                    .foregroundColor(isChecked ? Color(red: 15/255, green: 174/255, blue: 1/255) : .gray)
-                            }
-
-                            Text("By checking this box you agree with the terms and conditions of using activeMe app.")
-                                .font(.system(size: 14))
-                                                
-                        }
                     }
                     .padding(.horizontal, 30)
-
+                    
                     Spacer().frame(height: 15)
-
-                ButtonView(title: "SIGN UP", image: "arrow.right") {
-                    Task {
-                        try await viewModel.createUser(withEmail: email, password: password, profileName: profileName, dob: selectedDate, height: height, weight: weight, gender: genderPlaceholder)
-                        
+                    
+                    // Sign Up Button
+                    ButtonView(title: "SIGN UP", image: "arrow.right") {
+                        Task {
+                            do {
+                                // Create User with Email and Password
+                                try await viewModel.createUser(
+                                    withEmail: email,
+                                    password: password
+                                    
+                                )
+                                
+                                // Clear all fields after successful sign up
+                                email = ""
+                                password = ""
+                                confirmPassword = ""
+                                
+                                // Navigate to CompleteRegistrationView
+                                showCompleteRegistration = true
+                            } catch {
+                                print("Sign Up failed: \(error.localizedDescription)")
+                            }
+                        }
                     }
-                }
-                .disabled(!formIsValid)
-                .opacity(formIsValid ? 1 : 0.5)
-
-                Spacer().frame(height: 30)
-
-                Button {
-                    dismiss()
-                } label: {
-                    HStack(spacing: 3) {
-                        Text("Already have an account?")
-                            .font(.system(size: 14))
-                            .foregroundColor(.black)
-                        
-                        Text("Sign In")
-                            .font(.system(size: 14, weight: .bold))
-                            .foregroundColor(Color(red: 15/255, green: 174/255, blue: 1/255))
+                    .disabled(!formIsValid)
+                    .opacity(formIsValid ? 1 : 0.5)
+                    
+                    Spacer().frame(height: 200)
+                    
+                    // Navigate to Sign In
+                    NavigationLink {
+                        SignInView()
+                            .navigationBarBackButtonHidden(true)
+                    } label: {
+                        HStack(spacing: 3) {
+                            Text("Already have an account?")
+                                .font(.system(size: 14))
+                                .foregroundColor(adaptiveColor)
+                            
+                            Text("Sign In")
+                                .font(.system(size: 14, weight: .bold))
+                                .foregroundColor(Color(red: 15/255, green: 174/255, blue: 1/255))
+                        }
                     }
                 }
             }
-        }
-        .onAppear {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                showLottie = true
+            .onAppear {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    showLottie = true // Prevents immediate crash
+                }
+            }
+            // Listen for email verification alert
+            .onAppear {
+                NotificationCenter.default.addObserver(forName: NSNotification.Name("EmailVerificationSent"), object: nil, queue: .main) { _ in
+                    showVerificationAlert = true
+                }
+            }
+            // Alert shown after email verification is sent
+            .alert("Verification Email Sent", isPresented: $showVerificationAlert) {
+                Button("OK", role: .cancel) {
+                    // Redirect to Sign In Page
+                    dismiss()
+                }
+            } message: {
+                Text("Please check your email to verify your account before signing in.")
+            }
+            // Navigate to registration form after signup
+            .navigationDestination(isPresented: $showCompleteRegistration) {
+                CompleteRegistrationView(showCompleteRegistration: $showCompleteRegistration)
+                    .environmentObject(viewModel)
             }
         }
     }
 }
 
-//MARK: AuthenticationFormProtocol
+// MARK: Form Validation
 
 extension SignUpView: AuthenticationFormProtocol {
     var formIsValid: Bool {
         return !email.isEmpty
         && email.contains("@")
+        && email.contains(".")
         && !password.isEmpty
         && password.count > 5
         && !confirmPassword.isEmpty
         && confirmPassword == password
-        && !profileName.isEmpty
-        && !dobPlaceholder.isEmpty
-        && !genderPlaceholder.isEmpty
-        && !height.isEmpty
-        && !weight.isEmpty
-        && isChecked
-    
     }
 }
 
@@ -226,3 +169,5 @@ extension SignUpView: AuthenticationFormProtocol {
     SignUpView()
         .environmentObject(AuthViewModel())
 }
+
+    
